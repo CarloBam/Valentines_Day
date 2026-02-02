@@ -21,7 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialization ---
     function init() {
-        // Set text content from config
+        // 1. Check for stored name overrides
+        const storedName = localStorage.getItem('valentineName');
+        if (storedName) {
+            config.personName = storedName;
+        }
+
+        // Set text content
         personNameEl.textContent = config.personName;
         questionEl.textContent = config.question;
         successTitle.textContent = config.successTitle;
@@ -33,63 +39,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         createFloatingHearts();
+        setupAdmin();
     }
 
     // --- Interaction Logic ---
 
     // 1. "No" Button Dodge Logic
     function dodgeNo(e) {
-        // Ensure the button acts as fixed position to move freely
-        noBtn.style.position = 'fixed';
+        noBtn.style.position = 'fixed'; // Use fixed to be relative to viewport
 
-        // Get viewport dimensions
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
+        // Mobile-Safe Zone: Keep strictly within the middle 60% of the screen
+        // This avoids address bars (top/bottom) and edge swipes
+        const safeMargin = 20; // % percentage
+        const safeWidth = 60;  // % percentage used
 
-        const btnWidth = noBtn.offsetWidth;
-        const btnHeight = noBtn.offsetHeight;
+        // Random percent between 20% and 80%
+        const randomLeft = safeMargin + Math.random() * safeWidth;
+        const randomTop = safeMargin + Math.random() * safeWidth;
 
-        // STRICT SAFETY MARGINS (Keep away from edges)
-        // On mobile, headers/footers take space, so we use a larger bottom margin
-        const marginX = 20;
-        const marginY = 50;
+        noBtn.style.left = `${randomLeft}%`;
+        noBtn.style.top = `${randomTop}%`;
 
-        // Calculate safe boundaries
-        const minX = marginX;
-        const maxX = viewportWidth - btnWidth - marginX;
-
-        const minY = marginY;
-        const maxY = viewportHeight - btnHeight - marginY;
-
-        // Ensure we have positive range (prevents negative values on tiny screens)
-        const safeMaxX = Math.max(minX, maxX);
-        const safeMaxY = Math.max(minY, maxY);
-
-        // Generate random coordinates within strictly defined box
-        let newX = Math.random() * (safeMaxX - minX) + minX;
-        let newY = Math.random() * (safeMaxY - minY) + minY;
-
-        // Force the button to stay within the viewport if random math failed
-        newX = Math.min(Math.max(newX, minX), maxX);
-        newY = Math.min(Math.max(newY, minY), maxY);
-
-        // Apply new position
-        noBtn.style.left = `${newX}px`;
-        noBtn.style.top = `${newY}px`;
-
-        // Add wiggle class for effect
         noBtn.classList.add('dodging');
 
-        // Prevent default click behavior if this was triggered by a click/tap
+        // Prevent default click logic
         if (e && e.type !== 'mouseenter') {
             e.preventDefault();
+            e.stopPropagation();
         }
     }
 
     // Add multiple event listeners for robust dodging
     noBtn.addEventListener('mouseenter', dodgeNo);
-    noBtn.addEventListener('touchstart', dodgeNo); // Mobile touch
-    noBtn.addEventListener('click', dodgeNo); // Fallback
+    noBtn.addEventListener('touchstart', dodgeNo);
+    noBtn.addEventListener('click', dodgeNo);
 
     // 2. "Yes" Button Click Logic
     yesBtn.addEventListener('click', () => {
@@ -102,15 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
         askingState.classList.add('hidden');
         successState.classList.remove('hidden');
         successState.classList.add('fade-in');
-
         loadMedia();
     }
 
     // 4. Media Loading with Fallback
     function loadMedia() {
-        mediaPlaceholder.innerHTML = ''; // Clear emoji placeholder
+        mediaPlaceholder.innerHTML = '';
 
-        // If no video is defined, go straight to GIF
         if (!config.assets.successVideo) {
             loadGif();
             return;
@@ -121,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         video.autoplay = true;
         video.loop = true;
         video.playsInline = true;
-        video.muted = true; // Auto-play often requires muted first
+        video.muted = true;
         video.className = 'media-asset';
 
         video.onerror = () => {
@@ -138,10 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
         img.alt = "Celebration";
         img.className = 'media-asset';
         img.onerror = () => {
-            console.log("GIF failed to load, falling back to emoji.");
             mediaPlaceholder.innerHTML = '<div class="cute-emoji-success">💖🥰💖</div>';
         };
-        // Clear container just in case (e.g. removing failed video)
         mediaPlaceholder.innerHTML = '';
         mediaPlaceholder.appendChild(img);
     }
@@ -152,14 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isPlaying) {
             bgm.play().then(() => {
                 isPlaying = true;
-                audioToggle.textContent = '🔇'; // State: Playing, click to mute
-            }).catch(e => {
-                console.log("Audio play failed (interaction required first?):", e);
-            });
+                audioToggle.textContent = '🔇';
+            }).catch(e => console.log(e));
         } else {
             bgm.pause();
             isPlaying = false;
-            audioToggle.textContent = '🎵'; // State: Muted, click to play
+            audioToggle.textContent = '🎵';
         }
     });
 
@@ -167,17 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function createFloatingHearts() {
         const container = document.getElementById('heartsContainer');
         const heartCount = 15;
-
         for (let i = 0; i < heartCount; i++) {
             const heart = document.createElement('div');
             heart.classList.add('heart-particle');
             heart.textContent = ['❤️', '💖', '💕', '💗'][Math.floor(Math.random() * 4)];
-
-            // Randomize position and animation delay
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDelay = Math.random() * 5 + 's';
             heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
-
             container.appendChild(heart);
         }
     }
@@ -186,10 +159,43 @@ document.addEventListener('DOMContentLoaded', () => {
     replayBtn.addEventListener('click', () => {
         successState.classList.add('hidden');
         askingState.classList.remove('hidden');
-        // Reset No button position
         noBtn.style.position = 'static';
         noBtn.classList.remove('dodging');
     });
+
+    // 8. Admin / Settings Logic
+    function setupAdmin() {
+        const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const closeModal = document.getElementById('closeModal');
+        const saveNameBtn = document.getElementById('saveNameBtn');
+        const newNameInput = document.getElementById('newNameInput');
+
+        adminBtn.addEventListener('click', () => {
+            const password = prompt("Enter Admin Password:");
+            if (password === "iloveyou" || password === "admin") { // Simple client-side check
+                adminModal.classList.remove('hidden');
+                newNameInput.value = config.personName;
+            } else {
+                alert("Incorrect password!");
+            }
+        });
+
+        closeModal.addEventListener('click', () => {
+            adminModal.classList.add('hidden');
+        });
+
+        saveNameBtn.addEventListener('click', () => {
+            const newName = newNameInput.value.trim();
+            if (newName) {
+                localStorage.setItem('valentineName', newName); // Save to browser storage
+                config.personName = newName;
+                personNameEl.textContent = newName;
+                alert("Name updated! (Saved in your browser)");
+                adminModal.classList.add('hidden');
+            }
+        });
+    }
 
     // Run init
     init();
