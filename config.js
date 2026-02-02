@@ -16,7 +16,7 @@ const CONFIG = {
     assets: {
         // Shown on the success screen. 
         // Logic: tries to load gif, falls back to mp4, falls back to emoji.
-        successGif: "https://www.nicepng.com/ourpic/detail/208-2081197_valentine-teddy-bear-transparent-background-png-image-happy.png", // Cute Bear Image (Static)
+        successGif: "https://www.pngkey.com/png/full/802-8027731_valentine-teddy-bears-png-clipart-pictureu200b-teddy-bear.png", // Reliable Bear Image
         successVideo: "", // Set to empty to skip video and go straight to image
 
         // Optional background music.
