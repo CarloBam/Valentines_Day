@@ -1,9 +1,12 @@
 /* CSS Variables for the theme */
 :root {
-    --color-bg: #fdf2f8; /* Very light pink */
+    --color-bg: #fdf2f8;
+    /* Very light pink */
     --color-card: #ffffff;
-    --color-primary: #ff4d6d; /* Vibrant pink/red */
-    --color-secondary: #ff8fa3; /* Soft pink */
+    --color-primary: #ff4d6d;
+    /* Vibrant pink/red */
+    --color-secondary: #ff8fa3;
+    /* Soft pink */
     --color-text-dark: #590d22;
     --color-text-soft: #800f2f;
     --font-heading: 'Pacifico', cursive;
@@ -27,7 +30,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Prevent scrolling when No button moves */
+    overflow: hidden;
+    /* Prevent scrolling when No button moves */
     position: relative;
 }
 
@@ -52,9 +56,19 @@ body {
 }
 
 @keyframes floatUp {
-    0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-    20% { opacity: 0.8; }
-    100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+    }
 }
 
 /* Container & Card */
@@ -105,7 +119,8 @@ body {
     justify-content: center;
     gap: 1.5rem;
     margin-top: 1rem;
-    position: relative; /* Context for absolute positioning if needed */
+    position: relative;
+    /* Context for absolute positioning if needed */
     flex-wrap: wrap;
 }
 
@@ -143,9 +158,13 @@ body {
 
 /* No Button Logic - Absolute positioning will be applied by JS for dodging */
 .btn-no.dodging {
-    position: fixed; /* Use fixed to dodge across the whole screen easily */
+    position: fixed;
+    /* Use fixed to dodge across the whole screen easily */
     z-index: 100;
     transition: top 0.2s ease, left 0.2s ease;
+    max-width: 90vw;
+    /* Prevent button from being wider than screen */
+    overflow: hidden;
 }
 
 .hint-text {
@@ -165,19 +184,39 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes bounce {
-    from { transform: translateY(0); }
-    to { transform: translateY(-15px); }
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-15px);
+    }
 }
 
 /* Audio Toggle */

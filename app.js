@@ -42,25 +42,36 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ensure the button acts as fixed position to move freely
         noBtn.style.position = 'fixed';
 
+        // Get viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
 
-        // Use a larger padding to ensure it stays well inside
-        const padding = 80;
+        // STRICT SAFETY MARGINS (Keep away from edges)
+        // On mobile, headers/footers take space, so we use a larger bottom margin
+        const marginX = 20;
+        const marginY = 50;
 
-        // Get valid window dimensions
-        const maxX = window.innerWidth - btnWidth - padding;
-        const maxY = window.innerHeight - btnHeight - padding;
-        const minX = padding;
-        const minY = padding;
+        // Calculate safe boundaries
+        const minX = marginX;
+        const maxX = viewportWidth - btnWidth - marginX;
 
-        // Ensure we have a valid range (in case screen is tiny)
+        const minY = marginY;
+        const maxY = viewportHeight - btnHeight - marginY;
+
+        // Ensure we have positive range (prevents negative values on tiny screens)
         const safeMaxX = Math.max(minX, maxX);
         const safeMaxY = Math.max(minY, maxY);
 
-        // Generate random coordinates
+        // Generate random coordinates within strictly defined box
         let newX = Math.random() * (safeMaxX - minX) + minX;
         let newY = Math.random() * (safeMaxY - minY) + minY;
+
+        // Force the button to stay within the viewport if random math failed
+        newX = Math.min(Math.max(newX, minX), maxX);
+        newY = Math.min(Math.max(newY, minY), maxY);
 
         // Apply new position
         noBtn.style.left = `${newX}px`;
