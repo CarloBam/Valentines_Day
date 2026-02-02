@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <meta name="description" content="A cute valentine proposal page">
     <link rel="stylesheet" href="styles.css">
     <!-- Google Fonts for a cute look -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Pacifico&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
     <!-- Floating hearts background container -->
@@ -24,31 +27,30 @@
         <div id="askingState" class="card fade-in">
             <h1 class="headline">Hey <span id="personName"></span>...</h1>
             <p class="question" id="questionText">Will you be my Valentine?</p>
-            
+
             <div class="gif-container">
-                 <!-- Cute asking gif or sticker can go here if desired, using a default cute emoji for now -->
-                 <div class="cute-emoji">🥺👉👈</div>
+                <!-- Cute asking gif or sticker can go here if desired, using a default cute emoji for now -->
+                <div class="cute-emoji">🥺👉👈</div>
             </div>
 
             <div class="buttons-container">
                 <button id="yesBtn" class="btn btn-yes">Yes</button>
                 <button id="noBtn" class="btn btn-no">No</button>
             </div>
-            
-            <p class="hint-text">Tip: Try clicking No</p>
+
         </div>
 
         <!-- STATE 2: SUCCESS -->
         <div id="successState" class="card hidden">
             <h1 class="headline" id="successTitle">Yay!</h1>
-            
+
             <div class="media-container">
                 <!-- Video/Gif will be injected here -->
                 <div id="mediaPlaceholder" class="cute-emoji-success">💖🥰💖</div>
             </div>
-            
+
             <p class="message" id="successMessage"></p>
-            
+
             <button id="replayBtn" class="btn btn-secondary">Replay</button>
         </div>
     </main>
@@ -61,4 +63,5 @@
     <script src="config.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

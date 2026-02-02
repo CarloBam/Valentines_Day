@@ -42,9 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ensure the button acts as fixed position to move freely
         noBtn.style.position = 'fixed';
 
-        const padding = 20; // safe distance from edge
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
+
+        // Use a larger padding to ensure it stays well inside
+        const padding = 80;
 
         // Get valid window dimensions
         const maxX = window.innerWidth - btnWidth - padding;
@@ -52,9 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const minX = padding;
         const minY = padding;
 
+        // Ensure we have a valid range (in case screen is tiny)
+        const safeMaxX = Math.max(minX, maxX);
+        const safeMaxY = Math.max(minY, maxY);
+
         // Generate random coordinates
-        let newX = Math.random() * (maxX - minX) + minX;
-        let newY = Math.random() * (maxY - minY) + minY;
+        let newX = Math.random() * (safeMaxX - minX) + minX;
+        let newY = Math.random() * (safeMaxY - minY) + minY;
 
         // Apply new position
         noBtn.style.left = `${newX}px`;

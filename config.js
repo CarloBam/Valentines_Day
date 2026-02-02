@@ -1,6 +1,6 @@
 const CONFIG = {
     // The name of the person you are asking
-    personName: "Crush",
+    personName: "Ilhaam",
 
     // The main question
     question: "Will you be my Valentine?",
@@ -16,8 +16,8 @@ const CONFIG = {
     assets: {
         // Shown on the success screen. 
         // Logic: tries to load gif, falls back to mp4, falls back to emoji.
-        successGif: "https://media1.tenor.com/m/K24jH77FvD8AAAAC/mochi-peach-cat-mochi-cat.gif", // Cute Mochi Cat love
-        successVideo: "", // Set to empty to skip video and go straight to GIF
+        successGif: "https://www.nicepng.com/ourpic/detail/208-2081197_valentine-teddy-bear-transparent-background-png-image-happy.png", // Cute Bear Image (Static)
+        successVideo: "", // Set to empty to skip video and go straight to image
 
         // Optional background music.
         audio: "assets/bgm.mp3"
