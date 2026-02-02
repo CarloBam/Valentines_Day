@@ -93,6 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadMedia() {
         mediaPlaceholder.innerHTML = ''; // Clear emoji placeholder
 
+        // If no video is defined, go straight to GIF
+        if (!config.assets.successVideo) {
+            loadGif();
+            return;
+        }
+
         const video = document.createElement('video');
         video.src = config.assets.successVideo;
         video.autoplay = true;
@@ -102,22 +108,25 @@ document.addEventListener('DOMContentLoaded', () => {
         video.className = 'media-asset';
 
         video.onerror = () => {
-            // If video fails, try gif
             console.log("Video failed to load, trying GIF...");
-            const img = document.createElement('img');
-            img.src = config.assets.successGif;
-            img.className = 'media-asset';
-            img.onerror = () => {
-                // If GIF fails, restore cute emoji
-                console.log("GIF failed to load, falling back to emoji.");
-                mediaPlaceholder.innerHTML = '<div class="cute-emoji-success">💖🥰💖</div>';
-            };
-            mediaPlaceholder.innerHTML = '';
-            mediaPlaceholder.appendChild(img);
+            loadGif();
         };
 
-        // Try appending video first
         mediaPlaceholder.appendChild(video);
+    }
+
+    function loadGif() {
+        const img = document.createElement('img');
+        img.src = config.assets.successGif;
+        img.alt = "Celebration";
+        img.className = 'media-asset';
+        img.onerror = () => {
+            console.log("GIF failed to load, falling back to emoji.");
+            mediaPlaceholder.innerHTML = '<div class="cute-emoji-success">💖🥰💖</div>';
+        };
+        // Clear container just in case (e.g. removing failed video)
+        mediaPlaceholder.innerHTML = '';
+        mediaPlaceholder.appendChild(img);
     }
 
     // 5. Audio Toggle

@@ -16,7 +16,7 @@ const CONFIG = {
     assets: {
         // Shown on the success screen. 
         // Logic: tries to load gif, falls back to mp4, falls back to emoji.
-        successGif: "https://i.pinimg.com/originals/77/6b/21/776b215bed3dee747bc4e816d5f09673.gif", // Cute Mochi Cat dancing
+        successGif: "https://media1.tenor.com/m/K24jH77FvD8AAAAC/mochi-peach-cat-mochi-cat.gif", // Cute Mochi Cat love
         successVideo: "", // Set to empty to skip video and go straight to GIF
 
         // Optional background music.
