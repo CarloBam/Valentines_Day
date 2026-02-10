@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (personNameEl) personNameEl.textContent = config.personName;
         if (questionEl) questionEl.textContent = config.question;
         if (successTitle) successTitle.textContent = config.successTitle;
-        if (successMessage) successMessage.textContent = config.successMessage;
 
         // Audio setup
         if (config.assets.audio && bgm) {
