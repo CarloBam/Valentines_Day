@@ -17,7 +17,26 @@
     <!-- Floating hearts background container -->
     <div class="hearts-container" id="heartsContainer"></div>
 
-    <main class="container">
+    <!-- INTRO SCREEN: ENVELOPE ANIMATION -->
+    <section id="introScreen">
+        <div class="envelope-wrapper" id="envelopeWrapper">
+            <div class="envelope">
+                <div class="flap"></div>
+                <div class="pocket"></div>
+                <!-- Letter Content -->
+                <div class="letter">
+                    <div class="letter-content" id="letterContent">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+                <div class="open-text" id="openText">Open Me</div>
+            </div>
+        </div>
+        <button id="skipBtn">Skip Intro</button>
+    </section>
+
+    <!-- MAIN APP SCREEN -->
+    <main id="mainScreen" class="container hidden">
         <!-- AUDIO TOGGLE -->
         <button id="audioToggle" class="audio-toggle" aria-label="Toggle music">
             🎵
@@ -31,8 +50,8 @@
             <div class="gif-container">
                 <!-- Cute asking gif or sticker can go here if desired, using a default cute emoji for now -->
                 <div class="cute-emoji">
-                    <div>🥺</div>
-                    <div>👉👈</div>
+                    <div class="face">🥺</div>
+                    <div class="hands">👉👈</div>
                 </div>
             </div>
 

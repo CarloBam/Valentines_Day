@@ -1,5 +1,16 @@
-// Version: 1.1 - Fixed Video Playback
+// Version: 1.2 - Envelope Animation
 window.CONFIG = {
+    // Intro Animation Settings
+    intro: {
+        enabled: true,
+        autoStart: false,
+        skipText: "Skip Intro",
+        openText: "Open Me",
+        // Text inside the letter
+        // You can use {personName} as a placeholder
+        letterText: "Dearest {personName},\n\nI have a very important question for you...",
+        fromName: "" // Optional signature
+    },
     // The name of the person you are asking
     personName: "Ilhaam",
 

@@ -12,16 +12,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
     const successTitle = document.getElementById('successTitle');
-    const successMessage = document.getElementById('successMessage');
     const mediaPlaceholder = document.getElementById('mediaPlaceholder');
     const audioToggle = document.getElementById('audioToggle');
     const bgm = document.getElementById('bgm');
     const replayBtn = document.getElementById('replayBtn');
 
+    // Intro Elements
+    const introScreen = document.getElementById('introScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const envelopeWrapper = document.getElementById('envelopeWrapper');
+    const skipBtn = document.getElementById('skipBtn');
+    const letterContent = document.getElementById('letterContent');
+    const openText = document.getElementById('openText');
+
     // --- Initialization ---
     function init() {
         console.log("App Initializing...");
-
 
         // 1. Check for stored name overrides
         const storedName = localStorage.getItem('valentineName');
@@ -34,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (questionEl) questionEl.textContent = config.question;
         if (successTitle) successTitle.textContent = config.successTitle;
 
-
         // Audio setup
         if (config.assets.audio && bgm) {
             bgm.src = config.assets.audio;
@@ -42,6 +47,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
         createFloatingHearts();
         setupAdmin();
+
+        // Start Intro or Skip
+        if (config.intro && config.intro.enabled) {
+            setupIntro();
+        } else {
+            startMainApp();
+        }
+    }
+
+    // --- Intro Animation Logic ---
+    function setupIntro() {
+        // Set Text
+        if (skipBtn) skipBtn.textContent = config.intro.skipText || "Skip";
+        if (openText) openText.textContent = config.intro.openText || "Open Me";
+
+        // Prepare Letter
+        let msg = config.intro.letterText || "Dearest {personName},\n\nI have a question...";
+        msg = msg.replace("{personName}", config.personName);
+        msg = msg.replace(/\n/g, "<br>");
+
+        if (config.intro.fromName) {
+            msg += `<br><br>Love,<br>${config.intro.fromName}`;
+        }
+
+        if (letterContent) letterContent.innerHTML = msg;
+
+        // Event Listeners
+        if (skipBtn) {
+            skipBtn.addEventListener('click', () => {
+                startMainApp();
+            });
+        }
+
+        if (envelopeWrapper) {
+            envelopeWrapper.addEventListener('click', () => {
+                const envelope = envelopeWrapper.querySelector('.envelope');
+                if (envelope.classList.contains('open')) return; // Already open
+
+                envelope.classList.add('open');
+
+                // Play subtle sound if we had one, but we rely on BGM
+                // Hide open text
+                if (openText) openText.style.opacity = '0';
+                if (skipBtn) skipBtn.style.opacity = '0';
+
+                // Sequence: Open Flap -> Letter Up -> Wait -> Fade to Main
+                setTimeout(() => {
+                    startMainApp();
+                }, 3500); // 3.5s total animation time
+            });
+        }
+    }
+
+    function startMainApp() {
+        if (introScreen) {
+            introScreen.classList.add('hidden');
+            // small delay to allow CSS fade if we added one, but here we just hide
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+            }, 500);
+        }
+        if (mainScreen) {
+            mainScreen.classList.remove('hidden');
+            mainScreen.classList.add('visible');
+        }
     }
 
     // --- Interaction Logic ---
