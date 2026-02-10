@@ -337,13 +337,13 @@ body {
 
 /* Step 3: Expand Card */
 .envelope.zoom-in .letter {
-    /* Dimensions - Match the Main Card */
-    width: 90vw;
-    max-width: 600px;
+    /* Dimensions - Match the Main Card exactly */
+    width: 90%;
+    max-width: 500px;
     height: auto;
-    min-height: 400px;
-    padding: 40px;
-    /* Internal padding like the card */
+    min-height: 300px;
+    padding: 2.5rem;
+    /* Internal padding matches main card */
 
     /* Center text */
     display: flex;
