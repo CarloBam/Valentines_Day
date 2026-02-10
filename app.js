@@ -71,16 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (skipBtn) skipBtn.textContent = config.intro.skipText || "Skip";
         if (openText) openText.textContent = config.intro.openText || "Open Me";
 
-        // Prepare Letter
-        let msg = config.intro.letterText || "Dearest {personName},\n\nI have a question...";
-        msg = msg.replace("{personName}", config.personName);
-        msg = msg.replace(/\n/g, "<br>");
-
-        if (config.intro.fromName) {
-            msg += `<br><br>Love,<br>${config.intro.fromName}`;
+        if (letterContent) {
+            letterContent.innerHTML = `
+                <h2 class="mini-headline">Hey ${config.personName}...</h2>
+                <div class="mini-emoji">🥺👉👈</div>
+                <p class="mini-text">Will you be my Valentine?</p>
+            `;
         }
-
-        if (letterContent) letterContent.innerHTML = msg;
 
         // Event Listeners
         if (skipBtn) {
