@@ -1,4 +1,3 @@
-
 // Access config from the global window object (defined in config.js)
 const config = window.CONFIG;
 
@@ -21,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialization ---
     function init() {
+        console.log("App Initializing...");
+
+
         // 1. Check for stored name overrides
         const storedName = localStorage.getItem('valentineName');
         if (storedName) {
@@ -28,13 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Set text content
-        personNameEl.textContent = config.personName;
-        questionEl.textContent = config.question;
-        successTitle.textContent = config.successTitle;
-        successMessage.textContent = config.successMessage;
+        if (personNameEl) personNameEl.textContent = config.personName;
+        if (questionEl) questionEl.textContent = config.question;
+        if (successTitle) successTitle.textContent = config.successTitle;
+        if (successMessage) successMessage.textContent = config.successMessage;
 
         // Audio setup
-        if (config.assets.audio) {
+        if (config.assets.audio && bgm) {
             bgm.src = config.assets.audio;
         }
 
@@ -46,14 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. "No" Button Dodge Logic
     function dodgeNo(e) {
+        if (!noBtn) return;
         noBtn.style.position = 'fixed'; // Use fixed to be relative to viewport
 
         // Mobile-Safe Zone: Keep strictly within the middle 60% of the screen
-        // This avoids address bars (top/bottom) and edge swipes
         const safeMargin = 20; // % percentage
         const safeWidth = 60;  // % percentage used
 
-        // Random percent between 20% and 80%
         const randomLeft = safeMargin + Math.random() * safeWidth;
         const randomTop = safeMargin + Math.random() * safeWidth;
 
@@ -62,34 +63,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         noBtn.classList.add('dodging');
 
-        // Prevent default click logic
         if (e && e.type !== 'mouseenter') {
             e.preventDefault();
             e.stopPropagation();
         }
     }
 
-    // Add multiple event listeners for robust dodging
-    noBtn.addEventListener('mouseenter', dodgeNo);
-    noBtn.addEventListener('touchstart', dodgeNo);
-    noBtn.addEventListener('click', dodgeNo);
+    if (noBtn) {
+        noBtn.addEventListener('mouseenter', dodgeNo);
+        noBtn.addEventListener('touchstart', dodgeNo);
+        noBtn.addEventListener('click', dodgeNo);
+    }
 
     // 2. "Yes" Button Click Logic
-    yesBtn.addEventListener('click', () => {
-        showSuccessState();
-        playCelebrate();
-    });
+    if (yesBtn) {
+        yesBtn.addEventListener('click', () => {
+            showSuccessState();
+        });
+    }
 
     // 3. State Switching
     function showSuccessState() {
         askingState.classList.add('hidden');
         successState.classList.remove('hidden');
         successState.classList.add('fade-in');
+
+        // Stop background music so we can hear the video
+        if (bgm) {
+            bgm.pause();
+            isPlaying = false;
+        }
+        if (audioToggle) audioToggle.textContent = '🎵';
+
         loadMedia();
     }
 
     // 4. Media Loading with Fallback
     function loadMedia() {
+        if (!mediaPlaceholder) return;
         mediaPlaceholder.innerHTML = '';
 
         if (!config.assets.successVideo) {
@@ -97,52 +108,111 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        let videoSrc = config.assets.successVideo;
+
+        console.log(`Loading video from: ${videoSrc}`);
+
+        // Create video element safely
         const video = document.createElement('video');
-        video.src = config.assets.successVideo;
+        video.id = 'successVideoElement';
+        video.controls = true;
         video.autoplay = true;
         video.loop = true;
         video.playsInline = true;
-        video.muted = true;
-        video.className = 'media-asset';
+        video.muted = false; // Try sound first
+        video.style.cssText = "width: 100%; border-radius: 12px; background: #000; min-height: 200px; display:block;";
 
-        video.onerror = () => {
-            console.log("Video failed to load, trying GIF...");
+        const source = document.createElement('source');
+        source.src = videoSrc;
+        source.type = 'video/mp4'; // Explicitly set type
+
+        source.onerror = (e) => {
+            console.log("Source failed to load.");
+        };
+
+        video.appendChild(source);
+
+        const fallbackText = document.createElement('p');
+        fallbackText.textContent = "Your browser does not support the video tag.";
+        video.appendChild(fallbackText);
+
+        mediaPlaceholder.appendChild(video);
+        console.log("Video element appended.");
+
+        // Handle loading errors
+        video.onerror = (e) => {
+            let errorMsg = "Unknown Error";
+            if (video.error) {
+                switch (video.error.code) {
+                    case 1: errorMsg = "MEDIA_ERR_ABORTED"; break;
+                    case 2: errorMsg = "MEDIA_ERR_NETWORK"; break;
+                    case 3: errorMsg = "MEDIA_ERR_DECODE"; break;
+                    case 4: errorMsg = "MEDIA_ERR_SRC_NOT_SUPPORTED"; break;
+                    default: errorMsg = "Code " + video.error.code;
+                }
+            }
+            console.error(`Video Error: ${errorMsg}`);
+            console.log("Trying GIF fallback...");
             loadGif();
         };
 
-        mediaPlaceholder.appendChild(video);
+        // Try to play with sound first
+        video.muted = false;
+        const playPromise = video.play();
+
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    console.log("Video playing with sound.");
+                })
+                .catch(error => {
+                    console.error(`Autoplay (sound) failed: ${error.name}`);
+                    // Fallback: Mute and play 
+                    video.muted = true;
+                    video.play()
+                        .then(() => console.log("Autoplay (muted) success."))
+                        .catch(e => console.error(`Autoplay (muted) failed.`));
+                });
+        }
     }
 
     function loadGif() {
+        if (!mediaPlaceholder) return;
+        mediaPlaceholder.innerHTML = '';
+
         const img = document.createElement('img');
         img.src = config.assets.successGif;
         img.alt = "Celebration";
         img.className = 'media-asset';
         img.onerror = () => {
+            console.log("GIF failed, showing emoji");
             mediaPlaceholder.innerHTML = '<div class="cute-emoji-success">💖🥰💖</div>';
         };
-        mediaPlaceholder.innerHTML = '';
         mediaPlaceholder.appendChild(img);
     }
 
     // 5. Audio Toggle
     let isPlaying = false;
-    audioToggle.addEventListener('click', () => {
-        if (!isPlaying) {
-            bgm.play().then(() => {
-                isPlaying = true;
-                audioToggle.textContent = '🔇';
-            }).catch(e => console.log(e));
-        } else {
-            bgm.pause();
-            isPlaying = false;
-            audioToggle.textContent = '🎵';
-        }
-    });
+    if (audioToggle && bgm) {
+        audioToggle.addEventListener('click', () => {
+            if (!isPlaying) {
+                bgm.play().then(() => {
+                    isPlaying = true;
+                    audioToggle.textContent = '🔇';
+                }).catch(e => console.log(e));
+            } else {
+                bgm.pause();
+                isPlaying = false;
+                audioToggle.textContent = '🎵';
+            }
+        });
+    }
 
     // 6. Background Decorations
     function createFloatingHearts() {
         const container = document.getElementById('heartsContainer');
+        if (!container) return;
+
         const heartCount = 15;
         for (let i = 0; i < heartCount; i++) {
             const heart = document.createElement('div');
@@ -156,12 +226,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 7. Replay
-    replayBtn.addEventListener('click', () => {
-        successState.classList.add('hidden');
-        askingState.classList.remove('hidden');
-        noBtn.style.position = 'static';
-        noBtn.classList.remove('dodging');
-    });
+    if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+            askingState.classList.add('hidden');
+            askingState.classList.remove('hidden');
+            successState.classList.add('hidden');
+
+            if (noBtn) {
+                noBtn.style.position = 'static';
+                noBtn.classList.remove('dodging');
+            }
+        });
+    }
 
     // 8. Admin / Settings Logic
     function setupAdmin() {
@@ -171,32 +247,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const saveNameBtn = document.getElementById('saveNameBtn');
         const newNameInput = document.getElementById('newNameInput');
 
+        if (!adminBtn || !adminModal) return;
+
         adminBtn.addEventListener('click', () => {
             const password = prompt("Enter Admin Password:");
-            if (password === "iloveyou" || password === "admin") { // Simple client-side check
+            if (password === "iloveyou" || password === "admin") {
                 adminModal.classList.remove('hidden');
-                newNameInput.value = config.personName;
+                if (newNameInput) newNameInput.value = config.personName;
             } else {
                 alert("Incorrect password!");
             }
         });
 
-        closeModal.addEventListener('click', () => {
-            adminModal.classList.add('hidden');
-        });
-
-        saveNameBtn.addEventListener('click', () => {
-            const newName = newNameInput.value.trim();
-            if (newName) {
-                localStorage.setItem('valentineName', newName); // Save to browser storage
-                config.personName = newName;
-                personNameEl.textContent = newName;
-                alert("Name updated! (Saved in your browser)");
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
                 adminModal.classList.add('hidden');
-            }
-        });
+            });
+        }
+
+        if (saveNameBtn) {
+            saveNameBtn.addEventListener('click', () => {
+                const newName = newNameInput.value.trim();
+                if (newName) {
+                    localStorage.setItem('valentineName', newName);
+                    config.personName = newName;
+                    if (personNameEl) personNameEl.textContent = newName;
+                    alert("Name updated! (Saved in your browser)");
+                    adminModal.classList.add('hidden');
+                }
+            });
+        }
     }
 
     // Run init
-    init();
+    try {
+        init();
+    } catch (e) {
+        console.error(e);
+        alert("Init failed: " + e.message);
+    }
 });

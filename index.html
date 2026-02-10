@@ -30,7 +30,10 @@
 
             <div class="gif-container">
                 <!-- Cute asking gif or sticker can go here if desired, using a default cute emoji for now -->
-                <div class="cute-emoji">🥺👉👈</div>
+                <div class="cute-emoji">
+                    <div>🥺</div>
+                    <div>👉👈</div>
+                </div>
             </div>
 
             <div class="buttons-container">
@@ -46,7 +49,9 @@
 
             <div class="media-container">
                 <!-- Video/Gif will be injected here -->
-                <div id="mediaPlaceholder" class="cute-emoji-success">💖🥰💖</div>
+                <div id="mediaPlaceholder">
+                    <div class="cute-emoji-success">💖🥰💖</div>
+                </div>
             </div>
 
             <p class="message" id="successMessage"></p>
@@ -61,7 +66,7 @@
     </audio>
 
     <!-- ADMIN INTERFACE -->
-    <div style="position: fixed; bottom: 10px; right: 10px; opacity: 0.3; font-size: 12px;">
+    <div style="position: fixed; bottom: 10px; right: 10px; opacity: 0.3; font-size: 12px; text-align: right;">
         <button id="adminBtn" style="background:none; border:none; cursor:pointer;" title="Admin Settings">⚙️</button>
     </div>
 

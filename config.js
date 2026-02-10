@@ -1,4 +1,4 @@
-const CONFIG = {
+window.CONFIG = {
     // The name of the person you are asking
     personName: "Ilhaam",
 
@@ -17,7 +17,7 @@ const CONFIG = {
         // Shown on the success screen. 
         // Logic: tries to load gif, falls back to mp4, falls back to emoji.
         successGif: "https://www.pngkey.com/png/full/802-8027731_valentine-teddy-bears-png-clipart-pictureu200b-teddy-bear.png", // Reliable Bear Image
-        successVideo: "", // Set to empty to skip video and go straight to image
+        successVideo: "assets/success-video.mp4", // Video in assets folder
 
         // Optional background music.
         audio: "assets/bgm.mp3"
