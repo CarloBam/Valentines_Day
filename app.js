@@ -133,7 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (noInteractCount === 4) {
             noBtn.textContent = "Really sure?";
         } else if (noInteractCount === 6) {
-            noBtn.textContent = "Just think about it";
+            noBtn.textContent = "Okay, pause. Think again";
+        } else if (noInteractCount === 8) {
+            noBtn.textContent = "I will simply move over here";
+        } else if (noInteractCount === 10) {
+            noBtn.textContent = "What if I say please?";
+        } else if (noInteractCount === 12) {
+            noBtn.textContent = "The yes button is right there.";
+        } else if (noInteractCount === 14) {
+            noBtn.textContent = "Yes is the only option.";
         }
 
         // Hide after 15 interactions
