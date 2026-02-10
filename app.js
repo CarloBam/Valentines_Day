@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if we have a next step configured
         const hasNextStep = !!config.youtubeNextUrl;
         let loopCount = 0;
-        const maxLoops = 3;
+        const maxLoops = 2;
 
         if (hasNextStep) {
             video.loop = false; // We handle "looping" manually

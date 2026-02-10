@@ -1,7 +1,7 @@
 // Version: 1.3 - Youtube Next Step
 window.CONFIG = {
     // Next Step URL (e.g. YouTube song)
-    // If set, the video will stop looping and redirect here after 3 plays.
+    // If set, the video will stop looping and redirect here after 2 plays.
     youtubeNextUrl: "https://music.youtube.com/watch?v=tyKu0uZS86Q", // Example: A Thousand Years
     youtubeNextText: "A Song For You 🎵",
     // Intro Animation Settings
@@ -9,7 +9,7 @@ window.CONFIG = {
         enabled: true,
         autoStart: false,
         skipText: "Skip Intro",
-        openText: "Open Me",
+        openText: "Click to open",
         // Text inside the letter
         // You can use {personName} as a placeholder
         letterText: "",
