@@ -7,10 +7,7 @@ window.CONFIG = {
     question: "Will you be my Valentine?",
 
     // The title that appears on the success screen
-    successTitle: "Yay! I knew you'd say YES!",
-
-    // A sweet message that appears below the success title
-    successMessage: "I owe you snacks and a cute date! ❤️",
+    successTitle: "I knew you'd say YES!",
 
     // Paths to your media assets. 
     // Place your own files in the 'assets' folder and update the names here.

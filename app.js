@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (personNameEl) personNameEl.textContent = config.personName;
         if (questionEl) questionEl.textContent = config.question;
         if (successTitle) successTitle.textContent = config.successTitle;
-        if (successMessage) successMessage.textContent = config.successMessage;
+
 
         // Audio setup
         if (config.assets.audio && bgm) {
@@ -56,6 +56,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Increase interaction count
         noInteractCount++;
+
+        // Text Changes
+        if (noInteractCount === 2) {
+            noBtn.textContent = "Are you sure?";
+        } else if (noInteractCount === 4) {
+            noBtn.textContent = "Really sure?";
+        } else if (noInteractCount === 6) {
+            noBtn.textContent = "Just think about it";
+        }
+
+        // Hide after 15 interactions
+        if (noInteractCount >= 15) {
+            noBtn.style.display = 'none';
+            return;
+        }
 
         // Every 5 clicks/dodges, shrink by 10%
         if (noInteractCount % 5 === 0) {
@@ -288,6 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (noBtn) {
                 noBtn.style.position = 'static';
                 noBtn.style.transform = 'scale(1)';
+                noBtn.style.display = 'inline-block'; // Or block/initial based on CSS, usually inline-block for buttons
+                noBtn.textContent = 'No';
                 noBtn.classList.remove('dodging');
             }
         });
