@@ -315,43 +315,50 @@ body {
     transition: opacity 0.5s 0.6s;
 }
 
-/* Step 1: Open Flap. Letter stays mostly put (just peaks). */
+/* Step 1: Open Flap & Letter pops OUT nicely */
 .envelope.open .letter {
-    transform: translateX(-50%) translateY(-20px);
-    /* Just a tiny peek */
-    z-index: 2;
-    /* Still behind pocket */
-}
-
-/* Step 2: Envelope Drops Down. Letter "Stays" (moves up relative). */
-.envelope.slide-out {
-    transform: translateY(600px);
-    /* Drop way down */
-    transition: transform 1.5s ease-in-out;
-}
-
-.envelope.slide-out .letter {
-    /* Counter-move UP to appear static on screen, or move up slightly to center */
-    /* If envelope moves +600, letter need -600 to stay. Let's do -700 to move it up a bit. */
-    transform: translateX(-50%) translateY(-700px);
+    transform: translateX(-50%) translateY(-180px);
+    /* Move UP visible out of pocket */
     z-index: 10;
-    /* Now it must be in front */
-    transition: transform 1.5s ease-in-out;
+    /* Move in front of everything immediately */
+    transition: transform 0.6s ease-out;
+    /* Fast pop out */
+}
+
+/* Step 2: Envelope Drops Down vs Letter Stays/Floats Up */
+.envelope.slide-out {
+    transform: translateY(800px);
+    /* Drop way down off screen */
+    transition: transform 1.2s ease-in;
+    /* Drop speed */
+}
+
+/* To keep the letter from going down with the envelope, we must move it UP by the same amount + its original offset */
+/* Envelope moves +800px. Letter was at -180px. To stay at visual -180px, it needs -180 - 800 = -980px relative to parent */
+/* We'll do -1000px to give it a slight "floating up" feeling as the envelope drops */
+.envelope.slide-out .letter {
+    transform: translateX(-50%) translateY(-1000px);
+    transition: transform 1.2s ease-in;
+    /* Sync with envelope drop */
 }
 
 /* Step 3: Expand Card to Match Main App Card Dimensions */
 .envelope.zoom-in .letter {
-    width: 90vw;
-    max-width: 600px;
-    height: auto;
-    min-height: 400px;
-    border-radius: 20px;
-    background: white;
-    /* Recentering logic: Override the slide-out transform and use fixed centering */
-    transform: translate(-50%, -50%) !important;
+    /* Force Center Logic */
+    /* We use !important to override the specific slide-out transforms */
+    /* To 'center' it while parent is at bottom: */
+    transform: translate(-50%, -800px) !important;
+    /* -800 cancels the +800 parent drop, bringing it back to 0 (origin center) */
     top: 50%;
+    /* Origin was center */
     left: 50%;
-    bottom: auto;
+
+    /* Make it big */
+    width: 90vw;
+    height: 60vh;
+
+    transition: all 1s ease-out;
+    background: white;
     z-index: 100;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
