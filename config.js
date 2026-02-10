@@ -1,9 +1,9 @@
 // Version: 1.3 - Youtube Next Step
 window.CONFIG = {
     // Next Step URL (e.g. YouTube song)
-    // If set, the video will stop looping and redirect here after 5 plays.
+    // If set, the video will stop looping and redirect here after 3 plays.
     youtubeNextUrl: "https://music.youtube.com/watch?v=tyKu0uZS86Q", // Example: A Thousand Years
-    youtubeNextText: "Our Song 🎵",
+    youtubeNextText: "A Song For You 🎵",
     // Intro Animation Settings
     intro: {
         enabled: true,
