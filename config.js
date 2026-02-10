@@ -8,7 +8,7 @@ window.CONFIG = {
         openText: "Open Me",
         // Text inside the letter
         // You can use {personName} as a placeholder
-        letterText: "Dearest {personName},\n\nI have a very important question for you...",
+        letterText: "Dearest {personName},",
         fromName: "" // Optional signature
     },
     // The name of the person you are asking

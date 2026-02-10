@@ -159,7 +159,8 @@ body {
     position: relative;
     width: 300px;
     height: 200px;
-    background: #ff4d6d;
+    background: #f0f0f0;
+    /* Inside color */
     border-radius: 0 0 10px 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
@@ -173,8 +174,8 @@ body {
     height: 0;
     border-left: 150px solid transparent;
     border-right: 150px solid transparent;
-    border-top: 110px solid #ff758f;
-    /* Slightly lighter */
+    border-top: 110px solid #f8f8f8;
+    /* Off-white flap */
     transform-origin: top;
     transition: transform 0.6s ease-in-out, z-index 0.6s;
     z-index: 5;
@@ -184,8 +185,8 @@ body {
     transform: rotateX(180deg);
     z-index: 1;
     /* Move behind letter when open */
-    border-top-color: #ff8fa3;
-    /* Darken slightly when open/backwards */
+    border-top-color: #e0e0e0;
+    /* Darker back of flap */
 }
 
 /* Pocket (bottom part covering letter) */
@@ -197,7 +198,8 @@ body {
     height: 0;
     border-left: 150px solid transparent;
     border-right: 150px solid transparent;
-    border-bottom: 100px solid #ff5d7a;
+    border-bottom: 100px solid #ffffff;
+    /* Pure white front */
     z-index: 4;
     border-radius: 0 0 10px 10px;
 }
@@ -209,7 +211,8 @@ body {
     transform: translateX(-50%);
     width: 260px;
     height: 180px;
-    background: white;
+    background: #fff0f3;
+    /* Very light pink letter */
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
@@ -226,8 +229,8 @@ body {
 }
 
 .envelope.open .letter {
-    transform: translateX(-50%) translateY(-60px);
-    /* Move up */
+    transform: translateX(-50%) translateY(-100px);
+    /* Move UP more */
     z-index: 6;
     /* Move in front */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
