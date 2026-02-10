@@ -182,11 +182,49 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Fallback: Mute and play 
                     video.muted = true;
                     video.play()
-                        .then(() => console.log("Autoplay (muted) success."))
+                        .then(() => {
+                            console.log("Autoplay (muted) success.");
+                            // Show "Tap to Unmute" button
+                            showUnmuteButton(video);
+                        })
                         .catch(e => console.error(`Autoplay (muted) failed.`));
                 });
         }
     }
+
+    function showUnmuteButton(video) {
+        const btn = document.createElement('button');
+        btn.textContent = "🔇 Tap to Unmute";
+        btn.style.cssText = "position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:10; background:rgba(0,0,0,0.7); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer;";
+
+        // Ensure parent is relative for scaling
+        mediaPlaceholder.style.position = 'relative';
+        mediaPlaceholder.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            video.muted = false;
+            btn.remove();
+        });
+
+        // Also remove if user uses native controls
+        video.addEventListener('volumechange', () => {
+            if (!video.muted) btn.remove();
+        });
+    }
+
+    // Auto-play BGM on first user interaction
+    document.body.addEventListener('click', function startAudio() {
+        if (config.assets.audio && bgm && bgm.paused && audioToggle.textContent === '🎵') {
+            // Only auto-play if we are NOT in success state (where we want video audio)
+            if (successState.classList.contains('hidden')) {
+                bgm.play().catch(e => console.log("BGM Auto-play failed", e));
+                isPlaying = true;
+                audioToggle.textContent = '🔇';
+            }
+        }
+        // Remove listener after first interaction
+        document.body.removeEventListener('click', startAudio);
+    }, { once: true });
 
     function loadGif() {
         if (!mediaPlaceholder) return;
