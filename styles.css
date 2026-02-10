@@ -325,34 +325,25 @@ body {
     /* Fast pop out */
 }
 
-/* Step 2: Envelope Drops Down vs Letter Stays Put (Counter-animation) */
+/* Step 2: Envelope Drops Down */
 .envelope.slide-out {
-    transform: translateY(600px);
-    /* Drop down */
+    transform: translateY(800px);
+    /* Drop way down off screen */
     transition: transform 1.2s ease-in;
+    /* Drop speed */
 }
 
-/* Counter-move UP to appear static on screen. */
-/* Parent moves +600. Child moves -600. Net visual move = 0. */
-/* Includes original offset (-180)?? No, we want to end up at visual center. */
-/* If we assume -180 is "out". We want to stay at -180 visual? */
-/* So -180 (base) - 600 (counter) = -780px. */
-.envelope.slide-out .letter {
-    transform: translateX(-50%) translateY(-780px);
-    transition: transform 1.2s ease-in;
-}
+/* Note: JS handles .letter position locking during slide-out */
 
 /* Step 3: Expand Card */
-/* We keep the vertical offset (-780px) to prevent jumping, and just expand dimensions. */
-/* We can adjust margins to fine-tune final centering if needed, or rely on the huge size covering gaps. */
 .envelope.zoom-in .letter {
-    /* Dimensions - Fill most of screen */
-    width: 95vw;
-    height: 90vh;
-
-    /* Position - Keep relative to parent bottom to prevent jump */
-    /* Maintain the -780px offset so origin doesn't snap */
-    transform: translateX(-50%) translateY(-780px);
+    /* Dimensions - Match the Main Card */
+    width: 90vw;
+    max-width: 600px;
+    height: auto;
+    min-height: 400px;
+    padding: 40px;
+    /* Internal padding like the card */
 
     /* Center text */
     display: flex;
@@ -363,9 +354,10 @@ body {
     border-radius: 20px;
     background: white;
     z-index: 100;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 
-    transition: width 1s ease-out, height 1s ease-out, border-radius 1s ease-out;
+    /* Smooth expansion */
+    transition: all 1.0s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Letter content fade in after movement */

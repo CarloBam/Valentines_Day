@@ -89,6 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (envelopeWrapper) {
             const openEnvelope = () => {
                 const envelope = envelopeWrapper.querySelector('.envelope');
+                const letter = envelope.querySelector('.letter');
+
                 if (envelope.classList.contains('open')) return; // Already open
 
                 envelope.classList.add('open');
@@ -97,24 +99,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (openText) openText.style.opacity = '0';
                 if (skipBtn) skipBtn.style.opacity = '0';
 
-                // Sequence:
-                // 1. Open Flap & Letter Pop Up (0.6s)
-                // 2. Slide Envelope Down (1.5s)
+                // Sequence: 
+                // 1. Open Flap & Letter Pop Up (0.8s)
                 setTimeout(() => {
+                    // 2. Detach Letter & Drop Envelope
+                    // We lock the letter to the center of the screen so it stays static
+                    // while the envelope falls away.
+
+                    // Get current metrics to avoid jump?
+                    // actually, calculating exact center is easier:
+                    // The animation Step 1 puts it roughly at center.
+                    // We switch to fixed positioning now.
+
+                    letter.style.position = 'fixed';
+                    letter.style.top = '50%';
+                    letter.style.left = '50%';
+                    letter.style.transform = 'translate(-50%, -50%)';
+                    letter.style.zIndex = '2000';
+                    letter.style.margin = '0';
+
+                    // Trigger Drop
                     envelope.classList.add('slide-out');
 
-                    // 3. Zoom Letter In (1.5s)
+                    // 3. Expand Letter (Gradual & Cute)
                     setTimeout(() => {
                         envelope.classList.add('zoom-in');
+                        // Note: CSS handles the width/height transition for .zoom-in .letter
+                        // forcing it to match card size
 
-                        // 4. Reveal Main App
+                        // 4. Reveal Main App Crossfade
                         setTimeout(() => {
                             startMainApp();
-                        }, 1000); // Wait for zoom to finish mostly
+                        }, 1200);
 
-                    }, 1500);
+                    }, 500); // Small pause before expanding
 
-                }, 1000);
+                }, 800);
             };
 
             envelopeWrapper.addEventListener('click', openEnvelope);
@@ -130,16 +150,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startMainApp() {
-        if (introScreen) {
-            introScreen.classList.add('hidden');
-            // small delay to allow CSS fade if we added one, but here we just hide
-            setTimeout(() => {
-                introScreen.style.display = 'none';
-            }, 500);
-        }
         if (mainScreen) {
             mainScreen.classList.remove('hidden');
-            mainScreen.classList.add('visible');
+            // Trigger reflow?
+            void mainScreen.offsetWidth;
+            mainScreen.classList.add('visible'); // Fade in
+        }
+
+        if (introScreen) {
+            // Fade out intro screen content (envelope etc is already gone/hidden by expansion)
+            // We want the Expanded Letter (which is part of introScreen) to fade out
+            // AS the Main Card fades in.
+            introScreen.style.transition = 'opacity 1s ease';
+            introScreen.style.opacity = '0';
+
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+            }, 1000);
         }
     }
 
