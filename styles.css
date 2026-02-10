@@ -115,11 +115,31 @@ body {
 }
 
 .cute-emoji .hands {
-    font-size: 1em;
-    /* Normal size */
+    font-size: 0.9em;
+    /* 10% smaller than parent (was 1em) */
     display: block;
     margin-top: -10px;
-    /* Bring hands closer */
+}
+
+/* Next Step Link Button */
+.song-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #ff4d6d;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+}
+
+.song-link:hover {
+    transform: scale(1.05);
+    background: #ff3355;
+    color: white;
 }
 
 /* --- Intro Envelope Animation --- */
@@ -204,6 +224,31 @@ body {
     border-radius: 0 0 10px 10px;
 }
 
+/* Open Me Button Style */
+.open-text {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ff4d6d;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    z-index: 6;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.envelope.open .open-text {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .letter {
     position: absolute;
     bottom: 0;
@@ -211,29 +256,52 @@ body {
     transform: translateX(-50%);
     width: 260px;
     height: 180px;
-    background: #fff0f3;
-    /* Very light pink letter */
-    padding: 20px;
+    background: white;
+    /* Pure White */
     border-radius: 5px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.8s ease-in-out, opacity 0.3s;
+    transition: transform 0.8s ease-in-out, width 1s ease-in, height 1s ease-in, border-radius 1s ease-in;
     z-index: 2;
     /* Initially inside/behind pocket */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: 'Pacifico', cursive;
-    color: #ff4d6d;
+    /* Remove text styles */
 }
 
+/* Step 1: Open Flap & Slide Letter Out Slightly */
 .envelope.open .letter {
     transform: translateX(-50%) translateY(-100px);
-    /* Move UP more */
+    /* Move UP */
     z-index: 6;
     /* Move in front */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Step 2: Slide Envelope Down & Letter Up Further */
+.envelope.slide-out {
+    transform: translateY(200px);
+    /* Move envelope down */
+    transition: transform 1.5s ease-in-out;
+}
+
+.envelope.slide-out .letter {
+    transform: translateX(-50%) translateY(-300px);
+    /* Move letter UP more to counter envelope down */
+    transition: transform 1.5s ease-in-out;
+}
+
+/* Step 3: Expand Letter to Fill Screen */
+.envelope.zoom-in .letter {
+    width: 150vw;
+    height: 150vh;
+    border-radius: 0;
+    /* Maintain center relative to envelope wrapper */
+    transform: translate(-50%, -50%) !important;
+    /* Force center */
+    top: 50%;
+    /* Re-center */
+    left: 50%;
+    bottom: auto;
+    transition: all 1.5s ease-in-out;
+    z-index: 100;
 }
 
 /* Letter content fade in after movement */

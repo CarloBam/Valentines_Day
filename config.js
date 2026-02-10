@@ -1,5 +1,9 @@
-// Version: 1.2 - Envelope Animation
+// Version: 1.3 - Youtube Next Step
 window.CONFIG = {
+    // Next Step URL (e.g. YouTube song)
+    // If set, the video will stop looping and redirect here after 5 plays.
+    youtubeNextUrl: "https://music.youtube.com/watch?v=tyKu0uZS86Q", // Example: A Thousand Years
+    youtubeNextText: "Our Song 🎵",
     // Intro Animation Settings
     intro: {
         enabled: true,
@@ -8,7 +12,7 @@ window.CONFIG = {
         openText: "Open Me",
         // Text inside the letter
         // You can use {personName} as a placeholder
-        letterText: "Dearest {personName},",
+        letterText: "",
         fromName: "" // Optional signature
     },
     // The name of the person you are asking

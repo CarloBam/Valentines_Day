@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionEl = document.getElementById('questionText');
     const askingState = document.getElementById('askingState');
     const successState = document.getElementById('successState');
+    const nextState = document.getElementById('nextState'); // New Screen
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
     const successTitle = document.getElementById('successTitle');
@@ -16,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const audioToggle = document.getElementById('audioToggle');
     const bgm = document.getElementById('bgm');
     const replayBtn = document.getElementById('replayBtn');
+    const youtubeNextLink = document.getElementById('youtubeNextLink'); // New Link
+    const backToSuccessBtn = document.getElementById('backToSuccessBtn'); // New Link
 
     // Intro Elements
     const introScreen = document.getElementById('introScreen');
@@ -39,6 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (personNameEl) personNameEl.textContent = config.personName;
         if (questionEl) questionEl.textContent = config.question;
         if (successTitle) successTitle.textContent = config.successTitle;
+
+        // Configure Youtube Link if present
+        if (config.youtubeNextUrl && youtubeNextLink) {
+            youtubeNextLink.href = config.youtubeNextUrl;
+            if (config.youtubeNextText) youtubeNextLink.textContent = config.youtubeNextText;
+        }
 
         // Audio setup
         if (config.assets.audio && bgm) {
@@ -81,22 +90,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (envelopeWrapper) {
-            envelopeWrapper.addEventListener('click', () => {
+            const openEnvelope = () => {
                 const envelope = envelopeWrapper.querySelector('.envelope');
                 if (envelope.classList.contains('open')) return; // Already open
 
                 envelope.classList.add('open');
 
-                // Play subtle sound if we had one, but we rely on BGM
                 // Hide open text
                 if (openText) openText.style.opacity = '0';
                 if (skipBtn) skipBtn.style.opacity = '0';
 
-                // Sequence: Open Flap -> Letter Up -> Wait -> Fade to Main
+                // Sequence:
+                // 1. Open Flap & Letter Pop Up (0.6s)
+                // 2. Slide Envelope Down (1.5s)
                 setTimeout(() => {
-                    startMainApp();
-                }, 3500); // 3.5s total animation time
-            });
+                    envelope.classList.add('slide-out');
+
+                    // 3. Zoom Letter In (1.5s)
+                    setTimeout(() => {
+                        envelope.classList.add('zoom-in');
+
+                        // 4. Reveal Main App
+                        setTimeout(() => {
+                            startMainApp();
+                        }, 1000); // Wait for zoom to finish mostly
+
+                    }, 1500);
+
+                }, 1000);
+            };
+
+            envelopeWrapper.addEventListener('click', openEnvelope);
+
+            // Auto open after 10 seconds if not clicked
+            setTimeout(() => {
+                const envelope = envelopeWrapper.querySelector('.envelope');
+                if (envelope && !envelope.classList.contains('open') && introScreen && !introScreen.classList.contains('hidden')) {
+                    openEnvelope();
+                }
+            }, 10000);
         }
     }
 
@@ -222,10 +254,44 @@ document.addEventListener('DOMContentLoaded', () => {
         video.id = 'successVideoElement';
         video.controls = true;
         video.autoplay = true;
-        video.loop = true;
         video.playsInline = true;
         video.muted = false; // Try sound first
         video.style.cssText = "width: 100%; border-radius: 12px; background: #000; min-height: 200px; display:block;";
+
+        // Check if we have a next step configured
+        const hasNextStep = !!config.youtubeNextUrl;
+        let loopCount = 0;
+        const maxLoops = 5;
+
+        if (hasNextStep) {
+            video.loop = false; // We handle "looping" manually
+
+            video.addEventListener('ended', () => {
+                loopCount++;
+                console.log(`Video ended. Play count: ${loopCount}`);
+
+                if (loopCount < maxLoops) {
+                    // Replay
+                    video.play().catch(e => console.log("Replay failed", e));
+                } else {
+                    // STOP and Go to Next Screen
+                    console.log("Max loops reached. Proceeding to next step.");
+                    successState.classList.add('hidden');
+                    if (nextState) {
+                        nextState.classList.remove('hidden');
+                        nextState.classList.add('fade-in');
+                    }
+                    // Stop background music if it was playing
+                    if (bgm) {
+                        bgm.pause();
+                        isPlaying = false;
+                    }
+                    if (audioToggle) audioToggle.textContent = '🎵';
+                }
+            });
+        } else {
+            video.loop = true; // Infinite loop if no next step
+        }
 
         const source = document.createElement('source');
         source.src = videoSrc;
@@ -253,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 2: errorMsg = "MEDIA_ERR_NETWORK"; break;
                     case 3: errorMsg = "MEDIA_ERR_DECODE"; break;
                     case 4: errorMsg = "MEDIA_ERR_SRC_NOT_SUPPORTED"; break;
-                    default: errorMsg = "Code " + video.error.code;
+                    default: errorMsg = `Code ${video.error.code}`;
                 }
             }
             console.error(`Video Error: ${errorMsg}`);
@@ -388,7 +454,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 8. Admin / Settings Logic
+    // 8. Back Button (from Next Step)
+    if (backToSuccessBtn) {
+        backToSuccessBtn.addEventListener('click', () => {
+            if (nextState) {
+                nextState.classList.add('hidden');
+                nextState.classList.remove('fade-in');
+            }
+            if (successState) {
+                successState.classList.remove('hidden');
+                successState.classList.add('fade-in');
+                // Optional: Restart video or just let it sit there? 
+                // Given standard behavior, we just show the previous screen.
+            }
+        });
+    }
+
+    // 9. Admin / Settings Logic
     function setupAdmin() {
         const adminBtn = document.getElementById('adminBtn');
         const adminModal = document.getElementById('adminModal');
