@@ -1,7 +1,7 @@
 // Version: 1.1 - Fixed Video Playback
 window.CONFIG = {
     // The name of the person you are asking
-    personName: "Jodie",
+    personName: "Ilhaam",
 
     // The main question
     question: "Will you be my Valentine?",
