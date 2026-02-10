@@ -293,9 +293,9 @@ body {
     transition: opacity 0.5s 0.5s;
 }
 
-.envelope.open .mini-headline,
-.envelope.open .mini-text,
-.envelope.open .mini-emoji {
+.envelope.zoom-in .mini-headline,
+.envelope.zoom-in .mini-text,
+.envelope.zoom-in .mini-emoji {
     opacity: 1;
 }
 
