@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (personNameEl) personNameEl.textContent = config.personName;
         if (questionEl) questionEl.textContent = config.question;
         if (successTitle) successTitle.textContent = config.successTitle;
+        if (successMessage) successMessage.textContent = config.successMessage;
 
         // Audio setup
         if (config.assets.audio && bgm) {
@@ -46,9 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Interaction Logic ---
 
     // 1. "No" Button Dodge Logic
+    let noInteractCount = 0;
+    let currentScale = 1.0;
+
     function dodgeNo(e) {
         if (!noBtn) return;
         noBtn.style.position = 'fixed'; // Use fixed to be relative to viewport
+
+        // Increase interaction count
+        noInteractCount++;
+
+        // Every 5 clicks/dodges, shrink by 10%
+        if (noInteractCount % 5 === 0) {
+            currentScale *= 0.9;
+            noBtn.style.transform = `scale(${currentScale})`;
+        }
 
         // Mobile-Safe Zone: Keep strictly within the middle 60% of the screen
         const safeMargin = 20; // % percentage
@@ -227,12 +240,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. Replay
     if (replayBtn) {
         replayBtn.addEventListener('click', () => {
-            askingState.classList.add('hidden');
-            askingState.classList.remove('hidden');
             successState.classList.add('hidden');
+            successState.classList.remove('fade-in');
+            askingState.classList.remove('hidden');
 
+            // Reset No Button
+            noInteractCount = 0;
+            currentScale = 1.0;
             if (noBtn) {
                 noBtn.style.position = 'static';
+                noBtn.style.transform = 'scale(1)';
                 noBtn.classList.remove('dodging');
             }
         });
