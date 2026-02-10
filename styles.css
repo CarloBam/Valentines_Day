@@ -325,42 +325,47 @@ body {
     /* Fast pop out */
 }
 
-/* Step 2: Envelope Drops Down vs Letter Stays/Floats Up */
+/* Step 2: Envelope Drops Down vs Letter Stays Put (Counter-animation) */
 .envelope.slide-out {
-    transform: translateY(800px);
-    /* Drop way down off screen */
+    transform: translateY(600px);
+    /* Drop down */
     transition: transform 1.2s ease-in;
-    /* Drop speed */
 }
 
-/* To keep the letter from going down with the envelope, we must move it UP by the same amount + its original offset */
-/* Envelope moves +800px. Letter was at -180px. To stay at visual -180px, it needs -180 - 800 = -980px relative to parent */
-/* We'll do -1000px to give it a slight "floating up" feeling as the envelope drops */
+/* Counter-move UP to appear static on screen. */
+/* Parent moves +600. Child moves -600. Net visual move = 0. */
+/* Includes original offset (-180)?? No, we want to end up at visual center. */
+/* If we assume -180 is "out". We want to stay at -180 visual? */
+/* So -180 (base) - 600 (counter) = -780px. */
 .envelope.slide-out .letter {
-    transform: translateX(-50%) translateY(-1000px);
+    transform: translateX(-50%) translateY(-780px);
     transition: transform 1.2s ease-in;
-    /* Sync with envelope drop */
 }
 
-/* Step 3: Expand Card to Match Main App Card Dimensions */
+/* Step 3: Expand Card */
+/* We keep the vertical offset (-780px) to prevent jumping, and just expand dimensions. */
+/* We can adjust margins to fine-tune final centering if needed, or rely on the huge size covering gaps. */
 .envelope.zoom-in .letter {
-    /* Force Center Logic */
-    /* We use !important to override the specific slide-out transforms */
-    /* To 'center' it while parent is at bottom: */
-    transform: translate(-50%, -800px) !important;
-    /* -800 cancels the +800 parent drop, bringing it back to 0 (origin center) */
-    top: 50%;
-    /* Origin was center */
-    left: 50%;
+    /* Dimensions - Fill most of screen */
+    width: 95vw;
+    height: 90vh;
 
-    /* Make it big */
-    width: 90vw;
-    height: 60vh;
+    /* Position - Keep relative to parent bottom to prevent jump */
+    /* Maintain the -780px offset so origin doesn't snap */
+    transform: translateX(-50%) translateY(-780px);
 
-    transition: all 1s ease-out;
+    /* Center text */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
     background: white;
     z-index: 100;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    transition: width 1s ease-out, height 1s ease-out, border-radius 1s ease-out;
 }
 
 /* Letter content fade in after movement */
