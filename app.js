@@ -559,11 +559,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateFinalCard() {
         if (finalCardIntro) finalCardIntro.textContent = "Thank you for choosing yes";
         if (finalCardTo) finalCardTo.textContent = `To ${config.personName}`;
-        if (finalCardNote) finalCardNote.textContent = "Hope this made you smile.";
+        if (finalCardNote) finalCardNote.textContent = config.finalCardNote || "Hope this made you smile.";
 
         if (finalCardFrom) {
             finalCardFrom.textContent = `From ${senderName}`;
-            finalCardFrom.style.display = 'block';
         }
 
         if (finalCardDate) {

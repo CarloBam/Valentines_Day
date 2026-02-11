@@ -665,36 +665,36 @@ body {
     line-height: 1.2;
 }
 
-/* Updated final card typography */
+/* Unified typography for card content */
+.final-card-to,
+.final-card-from {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin: 0.2rem 0;
+}
+
+.final-card-note {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+    color: rgba(0, 0, 0, 0.65);
+    font-style: normal;
+}
+
 .final-card-date {
-    font-size: 0.75rem;
-    color: #999;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.45);
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-top: 1rem;
     border-top: 1px solid #ffeef2;
     padding-top: 10px;
-}
-
-.final-card-to {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    color: var(--color-text-soft);
-}
-
-.final-card-note {
-    font-family: var(--font-body);
-    font-size: 1.1rem;
-    line-height: 1.5;
-    margin: 0.5rem 0;
-    font-style: italic;
-    color: #444;
-}
-
-.final-card-from {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--color-primary);
 }
 
 /* Decorative stamp or heart on card */
