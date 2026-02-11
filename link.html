@@ -134,7 +134,7 @@
             <label>Your Personal Link:</label>
             <div id="generatedLink" class="link-display">Fill in both names to generate link...</div>
             <p style="font-size: 0.9rem; color: #777; margin-bottom: 1rem; font-style: italic;">
-                Tip: Send this link as the "next step" so the person sees their name on the card.
+                Tip: Send this link as the "next step".
             </p>
 
             <div class="action-buttons">
@@ -146,81 +146,7 @@
 
     <div id="toast" class="toast">Link Copied! ✅</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toInput = document.getElementById('toNameInput');
-            const fromInput = document.getElementById('fromNameInput');
-            const linkDisplay = document.getElementById('generatedLink');
-            const copyBtn = document.getElementById('copyBtn');
-            const previewBtn = document.getElementById('previewBtn');
-            const toast = document.getElementById('toast');
-
-            function updateLink() {
-                const toName = toInput.value.trim();
-                const fromName = fromInput.value.trim();
-
-                if (toName && fromName) {
-                    // Determine base URL dynamically
-                    let base = window.location.href;
-
-                    // Clean up current URL to get the root directory
-                    // If ending in link.html, strip it
-                    if (base.includes('link.html')) {
-                        base = base.replace('link.html', '');
-                    }
-                    // Ensure it ends with / so we can append query params cleanly to the directory (index.html is default)
-                    // Or explicitly append index.html for clarity
-                    if (!base.endsWith('/')) {
-                        base += '/';
-                    }
-
-                    // Construct final URL
-                    const finalUrl = `${base}index.html?d=${encodeURIComponent(toName)}&f=${encodeURIComponent(fromName)}`;
-
-                    linkDisplay.textContent = finalUrl;
-                    copyBtn.disabled = false;
-                    previewBtn.disabled = false;
-
-                    // Update preview link
-                    previewBtn.onclick = () => window.open(finalUrl, '_blank');
-                } else {
-                    linkDisplay.textContent = "Fill in both names to generate link...";
-                    copyBtn.disabled = true;
-                    previewBtn.disabled = true;
-                    previewBtn.onclick = null;
-                }
-            }
-
-            // Copy Function
-            copyBtn.addEventListener('click', () => {
-                const text = linkDisplay.textContent;
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast();
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
-                    // Fallback
-                    const textarea = document.createElement('textarea');
-                    textarea.value = text;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    showToast();
-                });
-            });
-
-            function showToast() {
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
-            }
-
-            // Listeners
-            toInput.addEventListener('input', updateLink);
-            fromInput.addEventListener('input', updateLink);
-        });
-    </script>
+    <script src="link.js"></script>
 </body>
 
 </html>
