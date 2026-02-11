@@ -636,33 +636,49 @@ body {
     justify-content: center;
 }
 
-/* FINAL CARD STYLES */
+/* FINAL CARD STYLES - STATIONERY LOOK */
 .final-card {
-    background: linear-gradient(135deg, #fff0f3 0%, #fff 100%);
-    border: 1px solid #ffccd5;
-    border-radius: 15px;
-    padding: 2rem;
+    background-color: #fffcfd;
+    background-image: radial-gradient(#ffccd5 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    border: 3px solid #ffccd5;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
     width: 100%;
-    max-width: 400px;
-    /* Slightly tighter for that postcard look */
+    max-width: 380px;
     margin: 0 auto;
-    box-shadow: 0 5px 15px rgba(255, 77, 109, 0.15);
+    box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2), inset 0 0 30px rgba(255, 255, 255, 0.8);
     text-align: center;
     position: relative;
     color: #555;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    /* Updated gap */
+    gap: 0.5rem;
+    overflow: hidden;
 }
 
-/* NEW: Final Card Intro / Header */
+/* Decorative stamp/sticker */
+.final-card::after {
+    content: '💌';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 2.5rem;
+    opacity: 0.9;
+    transform: rotate(15deg);
+    filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.1));
+    z-index: 10;
+}
+
+/* Header */
 .final-card-intro {
-    font-family: var(--font-heading);
-    font-size: 1.6rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    font-weight: 700;
     color: var(--color-primary);
-    margin: 0;
+    margin-bottom: 0.5rem;
     line-height: 1.2;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
 }
 
 /* Unified typography for card content */
@@ -670,40 +686,46 @@ body {
 .final-card-from {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--color-primary);
     margin: 0.2rem 0;
+    letter-spacing: 0.5px;
 }
 
 .final-card-note {
     font-family: 'Outfit', sans-serif;
     font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.5;
-    margin: 0.5rem 0;
-    color: rgba(0, 0, 0, 0.65);
-    font-style: normal;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 1rem 0;
+    color: #777;
+    font-style: italic;
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+/* Heart Divider after note */
+.final-card-note::after {
+    content: '♥';
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffccd5;
+    font-size: 1.2rem;
 }
 
 .final-card-date {
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
-    color: rgba(0, 0, 0, 0.45);
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.4);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 1rem;
-    border-top: 1px solid #ffeef2;
-    padding-top: 10px;
-}
-
-/* Decorative stamp or heart on card */
-.final-card::after {
-    content: '💖';
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 1.5rem;
-    opacity: 0.5;
-    transform: rotate(15deg);
+    letter-spacing: 1.5px;
+    margin-top: 1.5rem;
+    border-top: 1px dashed #ffccd5;
+    padding-top: 12px;
+    width: 80%;
+    align-self: center;
 }
