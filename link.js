@@ -1,5 +1,5 @@
-const LOG_ENDPOINT = "PASTE_YOUR_WEB_APP_URL_HERE";
-const LOG_SECRET = "PUT_YOUR_SECRET_HERE";
+const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbwebdKm20pHzHCLOeTfiO89ezbNriJzff1UwSAVJmVgTYvZJAf--TWfBEa1jI8BCWc/exec";
+const LOG_SECRET = "YOUR_SUPER_SECRET_KEY_123";
 
 document.addEventListener('DOMContentLoaded', () => {
     const toInput = document.getElementById('toNameInput');
@@ -43,12 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function logLinkAction(action) {
-        // If config is missing, just return (or log locally)
-        if (!LOG_ENDPOINT || LOG_ENDPOINT.includes("PASTE_YOUR")) {
-            console.log("Skipping log: No endpoint configured");
-            return;
-        }
+    function logLink(action) {
+        if (!LOG_ENDPOINT) return;
 
         const toName = toInput.value.trim();
         const fromName = fromInput.value.trim();
@@ -75,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Logged to sheet");
         }).catch(e => {
             console.error(e);
-            // Non-blocking warning
             console.warn("Could not save log, link still generated");
         });
     }
@@ -83,8 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Copy Function
     copyBtn.addEventListener('click', () => {
         const text = linkDisplay.textContent;
-        // Log first (fire and forget)
-        logLinkAction('copy');
+        logLink('copy');
 
         navigator.clipboard.writeText(text).then(() => {
             showToast();
@@ -104,8 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     previewBtn.addEventListener('click', () => {
         const url = linkDisplay.textContent;
         if (url && url.startsWith('http')) {
-            // Log first (fire and forget)
-            logLinkAction('preview');
+            logLink('preview');
             window.open(url, '_blank');
         }
     });
