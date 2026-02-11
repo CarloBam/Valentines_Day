@@ -1,10 +1,6 @@
 // Access config from the global window object (defined in config.js)
 const config = window.CONFIG;
 
-if (!config) {
-    alert("Error: config.js failed to load!");
-}
-
 // Validates that DOM elements exist before interacting with them
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM Loaded, starting app...");
@@ -32,8 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalCardFrom = document.getElementById('finalCardFrom');
     const finalCardDate = document.getElementById('finalCardDate');
     const finalCardNote = document.getElementById('finalCardNote');
+    const finalCardNote = document.getElementById('finalCardNote');
     const finalBackBtn = document.getElementById('finalBackBtn');
     const saveCardBtn = document.getElementById('saveCardBtn');
+    const saveStatusBtn = document.getElementById('saveStatusBtn'); // Added missing element
 
     let isPlaying = false;
     let senderName = "";
