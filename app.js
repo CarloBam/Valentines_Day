@@ -1,8 +1,13 @@
 // Access config from the global window object (defined in config.js)
 const config = window.CONFIG;
 
+if (!config) {
+    alert("Error: config.js failed to load!");
+}
+
 // Validates that DOM elements exist before interacting with them
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM Loaded, starting app...");
 
     // --- Elements ---
     const personNameEl = document.getElementById('personName');
