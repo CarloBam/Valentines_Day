@@ -34,7 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let senderName = "";
     let hasBothNames = false;
 
-
+    // Intro Elements
+    const introScreen = document.getElementById('introScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const envelopeWrapper = document.getElementById('envelopeWrapper');
+    const letterContent = document.getElementById('letterContent');
+    const openText = document.getElementById('openText');
 
     // --- Initialization ---
     function init() {
