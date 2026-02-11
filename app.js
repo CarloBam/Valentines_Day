@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalCardFrom = document.getElementById('finalCardFrom');
     const finalCardDate = document.getElementById('finalCardDate');
     const finalCardNote = document.getElementById('finalCardNote');
-    const finalCardNote = document.getElementById('finalCardNote');
     const finalBackBtn = document.getElementById('finalBackBtn');
     const saveCardBtn = document.getElementById('saveCardBtn');
     const saveStatusBtn = document.getElementById('saveStatusBtn'); // Added missing element
