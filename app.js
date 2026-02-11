@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 10. Final Card Logic
     function populateFinalCard() {
-        if (finalCardIntro) finalCardIntro.textContent = "Thank you for choosing yes";
+        if (finalCardIntro) finalCardIntro.textContent = config.finalCardIntro || "Thank you for choosing yes";
         if (finalCardTo) finalCardTo.textContent = `To ${config.personName}`;
         if (finalCardNote) finalCardNote.textContent = (config.finalCardNote || "Hope this made you smile.") + " 🙂";
 

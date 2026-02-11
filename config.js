@@ -24,7 +24,8 @@ window.CONFIG = {
     // The title that appears on the success screen
     successTitle: "I knew you'd say YES!",
 
-    // Note on the final card
+    // Final Card Text
+    finalCardIntro: "Officially my Valentine",
     finalCardNote: "Thanks for making me smile",
 
     // Paths to your media assets. 
