@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Intro Animation Logic ---
     function setupIntro() {
         // Set Text
-
         if (openText) openText.textContent = config.intro.openText || "Open Me";
 
         if (letterContent) {
@@ -126,33 +125,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Event Listeners
+        const openEnvelope = (e) => {
+            console.log("Envelope clicked!");
+            if (e) e.stopPropagation(); // Prevent double firing if clicking button inside wrapper
 
+            try {
+                // Ensure vars are fresh
+                const envelope = document.querySelector('.envelope');
+                const letter = document.querySelector('.letter');
 
-        if (envelopeWrapper) {
-            const openEnvelope = () => {
-                const envelope = envelopeWrapper.querySelector('.envelope');
-                const letter = envelope.querySelector('.letter');
+                if (!envelope || !letter) {
+                    console.error("Missing envelope elements");
+                    return;
+                }
 
                 if (envelope.classList.contains('open')) return; // Already open
 
                 envelope.classList.add('open');
+                console.log("Opening envelope...");
 
                 // Hide open text
-                if (openText) openText.style.opacity = '0';
-
+                const textBtn = document.getElementById('openText');
+                if (textBtn) textBtn.style.opacity = '0';
 
                 // Sequence: 
                 // 1. Open Flap & Letter Pop Up (0.8s)
                 setTimeout(() => {
-                    // 2. Detach Letter & Drop Envelope
-                    // We lock the letter to the center of the screen so it stays static
-                    // while the envelope falls away.
-
-                    // Get current metrics to avoid jump?
-                    // actually, calculating exact center is easier:
-                    // The animation Step 1 puts it roughly at center.
-                    // We switch to fixed positioning now.
-
+                    // 2. Switch to fixed positioning 
                     letter.style.position = 'fixed';
                     letter.style.top = '50%';
                     letter.style.left = '50%';
@@ -166,8 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 3. Expand Letter (Gradual & Cute)
                     setTimeout(() => {
                         envelope.classList.add('zoom-in');
-                        // Note: CSS handles the width/height transition for .zoom-in .letter
-                        // forcing it to match card size
 
                         // 4. Reveal Main App Crossfade
                         setTimeout(() => {
@@ -177,18 +174,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 500); // Small pause before expanding
 
                 }, 800);
-            };
+            } catch (err) {
+                console.error("Error opening envelope:", err);
+                // Fallback
+                startMainApp();
+            }
+        };
 
+        if (envelopeWrapper) {
             envelopeWrapper.addEventListener('click', openEnvelope);
-
-            // Auto open after 10 seconds if not clicked
-            setTimeout(() => {
-                const envelope = envelopeWrapper.querySelector('.envelope');
-                if (envelope && !envelope.classList.contains('open') && introScreen && !introScreen.classList.contains('hidden')) {
-                    openEnvelope();
-                }
-            }, 10000);
         }
+
+        // Explicitly attach to the button too, closer to user interaction
+        if (openText) {
+            openText.addEventListener('click', openEnvelope);
+        }
+
+        // Auto open after 10 seconds if not clicked
+        setTimeout(() => {
+            const envelope = document.querySelector('.envelope');
+            // Check if still on intro screen
+            if (envelope && !envelope.classList.contains('open') && introScreen && !introScreen.classList.contains('hidden')) {
+                console.log("Auto opening...");
+                openEnvelope();
+            }
+        }, 10000);
     }
 
     function startMainApp() {
