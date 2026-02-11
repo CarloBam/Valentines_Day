@@ -614,10 +614,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (saveStatusBtn) {
+        saveStatusBtn.addEventListener('click', () => {
+            exportWhatsAppStatus();
+        });
+    }
+
     function exportFinalCardAsPng() {
         const cardElement = document.getElementById('finalCard');
         if (!cardElement) return;
 
+        const originalText = saveCardBtn.textContent;
         saveCardBtn.textContent = "Saving...";
 
         // Use html2canvas
@@ -626,28 +633,90 @@ document.addEventListener('DOMContentLoaded', () => {
             backgroundColor: null, // Transparent bg if possible, or white by default
             useCORS: true // Allow cross-origin images if any
         }).then(canvas => {
-            const link = document.createElement('a');
-            const safeTo = (config.personName || "Valentine").replace(/[^a-z0-9]/gi, '_');
-            const safeFrom = (senderName || "Me").replace(/[^a-z0-9]/gi, '_');
-            const filename = `valentine-card-${safeTo}-${safeFrom}.png`;
-
-            link.download = filename;
-            link.href = canvas.toDataURL("image/png");
-
-            // Try download
-            try {
-                link.click();
-            } catch (e) {
-                console.log("Download failed, opening in new tab");
-                window.open(link.href, '_blank');
-            }
-
-            saveCardBtn.textContent = "Save Card 📸";
+            downloadCanvas(canvas, 'valentine-card');
+            saveCardBtn.textContent = originalText;
         }).catch(err => {
             console.error("Save failed:", err);
-            alert("Oops! Could not save image. Try taking a screenshot manually.");
-            saveCardBtn.textContent = "Save Card 📸";
+            alert("Oops! Could not save image.");
+            saveCardBtn.textContent = originalText;
         });
+    }
+
+    function exportWhatsAppStatus() {
+        const cardElement = document.getElementById('finalCard');
+        if (!cardElement) return;
+
+        const originalText = saveStatusBtn.textContent;
+        saveStatusBtn.textContent = "Generating...";
+
+        // 1. Create a 1080x1920 wrapper offscreen
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = `
+            position: fixed; 
+            top: 0; left: -9999px; 
+            width: 1080px; height: 1920px; 
+            background: #fff0f3;
+            background-image: radial-gradient(#ffccd5 2px, transparent 2px);
+            background-size: 30px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        `;
+        document.body.appendChild(wrapper);
+
+        // 2. Clone the card and scale it up a bit for the story format
+        const clone = cardElement.cloneNode(true);
+        // Reset margins / widths for the centered layout
+        clone.style.margin = '0';
+        clone.style.maxWidth = '800px';
+        clone.style.width = '80%';
+        clone.style.transform = 'scale(1.5)'; // Make it big and readable
+
+        // Add some branding or decoration bottom (optional)
+        const branding = document.createElement('div');
+        branding.textContent = "Made with ❤️";
+        branding.style.cssText = "position: absolute; bottom: 100px; color: #ff8fa3; font-family: 'Outfit', sans-serif; font-size: 2rem;";
+
+        wrapper.appendChild(clone);
+        wrapper.appendChild(branding);
+
+        // 3. Capture
+        html2canvas(wrapper, {
+            scale: 1, // 1:1 since we set exact pixels
+            backgroundColor: null,
+            useCORS: true
+        }).then(canvas => {
+            downloadCanvas(canvas, 'valentine-status');
+
+            // Cleanup
+            document.body.removeChild(wrapper);
+            saveStatusBtn.textContent = originalText;
+        }).catch(err => {
+            console.error("Status export failed:", err);
+            alert("Oops! Could not generate status image.");
+            document.body.removeChild(wrapper);
+            saveStatusBtn.textContent = originalText;
+        });
+    }
+
+    function downloadCanvas(canvas, prefix) {
+        const link = document.createElement('a');
+        const safeTo = (config.personName || "Valentine").replace(/[^a-z0-9]/gi, '_');
+        const safeFrom = (senderName || "Me").replace(/[^a-z0-9]/gi, '_');
+        const filename = `${prefix}-${safeTo}-${safeFrom}.png`;
+
+        link.download = filename;
+        link.href = canvas.toDataURL("image/png");
+
+        // Try download
+        try {
+            link.click();
+        } catch (e) {
+            console.log("Download failed, opening in new tab");
+            window.open(link.href, '_blank');
+        }
     }
 
     // Run init
