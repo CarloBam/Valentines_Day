@@ -14,29 +14,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const noBtn = document.getElementById('noBtn');
     const successTitle = document.getElementById('successTitle');
     const mediaPlaceholder = document.getElementById('mediaPlaceholder');
-    const audioToggle = document.getElementById('audioToggle');
+
     const bgm = document.getElementById('bgm');
     const replayBtn = document.getElementById('replayBtn');
     const youtubeNextLink = document.getElementById('youtubeNextLink'); // New Link
     const backToSuccessBtn = document.getElementById('backToSuccessBtn'); // New Link
 
-    // Intro Elements
-    const introScreen = document.getElementById('introScreen');
-    const mainScreen = document.getElementById('mainScreen');
-    const envelopeWrapper = document.getElementById('envelopeWrapper');
-    const skipBtn = document.getElementById('skipBtn');
-    const letterContent = document.getElementById('letterContent');
-    const openText = document.getElementById('openText');
+    // Final Card Elements
+    const finalCardState = document.getElementById('finalCardState');
+    const finalCardIntro = document.getElementById('finalCardIntro');
+    const finalCardTo = document.getElementById('finalCardTo');
+    const finalCardFrom = document.getElementById('finalCardFrom');
+    const finalCardDate = document.getElementById('finalCardDate');
+    const finalCardNote = document.getElementById('finalCardNote');
+    const finalBackBtn = document.getElementById('finalBackBtn');
+    const saveCardBtn = document.getElementById('saveCardBtn');
+
+    let isPlaying = false;
+    let senderName = "";
+    let hasBothNames = false;
+
+
 
     // --- Initialization ---
     function init() {
         console.log("App Initializing...");
 
-        // 1. Check for stored name overrides
-        const storedName = localStorage.getItem('valentineName');
-        if (storedName) {
-            config.personName = storedName;
+        // 1. Check for URL params or stored name overrides
+        const params = new URLSearchParams(window.location.search);
+        const urlName = (params.get("d") || "").trim();
+        const urlFrom = (params.get("f") || "").trim();
+
+        if (urlFrom) {
+            senderName = urlFrom;
         }
+
+        if (urlName) {
+            config.personName = urlName;
+        } else {
+            const storedName = localStorage.getItem('valentineName');
+            if (storedName) {
+                config.personName = storedName;
+            }
+        }
+
+        hasBothNames = Boolean(urlName && urlFrom);
+
+        // 2. Check for "Returned from YouTube" flag
+        // We do this via the visibilitychange listener globally, 
+        // but we also check on load just in case (though visibilitychange is safer for tab switching)
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible" && sessionStorage.getItem("wentToYoutube") === "1") {
+                sessionStorage.removeItem("wentToYoutube");
+
+                if (!hasBothNames) return; // Only show final card if BOTH names exist
+
+                populateFinalCard();
+                showFinalCard();
+            }
+        });
 
         // Set text content
         if (personNameEl) personNameEl.textContent = config.personName;
@@ -47,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (config.youtubeNextUrl && youtubeNextLink) {
             youtubeNextLink.href = config.youtubeNextUrl;
             if (config.youtubeNextText) youtubeNextLink.textContent = config.youtubeNextText;
+
+            // Track click
+            youtubeNextLink.addEventListener("click", () => {
+                sessionStorage.setItem("wentToYoutube", "1");
+            });
         }
 
         // Audio setup
@@ -68,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Intro Animation Logic ---
     function setupIntro() {
         // Set Text
-        if (skipBtn) skipBtn.textContent = config.intro.skipText || "Skip";
+
         if (openText) openText.textContent = config.intro.openText || "Open Me";
 
         if (letterContent) {
@@ -80,11 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Event Listeners
-        if (skipBtn) {
-            skipBtn.addEventListener('click', () => {
-                startMainApp();
-            });
-        }
+
 
         if (envelopeWrapper) {
             const openEnvelope = () => {
@@ -97,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Hide open text
                 if (openText) openText.style.opacity = '0';
-                if (skipBtn) skipBtn.style.opacity = '0';
+
 
                 // Sequence: 
                 // 1. Open Flap & Letter Pop Up (0.8s)
@@ -184,24 +221,24 @@ document.addEventListener('DOMContentLoaded', () => {
         noInteractCount++;
 
         // Text Changes
-        if (noInteractCount === 2) {
+        if (noInteractCount === 3) {
             noBtn.textContent = "Are you sure?";
         } else if (noInteractCount === 4) {
             noBtn.textContent = "Really sure?";
-        } else if (noInteractCount === 6) {
+        } else if (noInteractCount === 5) {
             noBtn.textContent = "Okay, pause. Think again";
-        } else if (noInteractCount === 8) {
+        } else if (noInteractCount === 6) {
             noBtn.textContent = "I will simply move over here";
-        } else if (noInteractCount === 10) {
+        } else if (noInteractCount === 7) {
             noBtn.textContent = "What if I say please?";
-        } else if (noInteractCount === 12) {
+        } else if (noInteractCount === 8) {
             noBtn.textContent = "The yes button is right there.";
-        } else if (noInteractCount === 14) {
+        } else if (noInteractCount === 9) {
             noBtn.textContent = "Yes is the only option.";
         }
 
         // Hide after 15 interactions
-        if (noInteractCount >= 15) {
+        if (noInteractCount >= 10) {
             noBtn.style.display = 'none';
             return;
         }
@@ -254,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bgm.pause();
             isPlaying = false;
         }
-        if (audioToggle) audioToggle.textContent = '🎵';
+
 
         loadMedia();
     }
@@ -310,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         bgm.pause();
                         isPlaying = false;
                     }
-                    if (audioToggle) audioToggle.textContent = '🎵';
+
                 }
             });
         } else {
@@ -397,12 +434,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-play BGM on first user interaction
     document.body.addEventListener('click', function startAudio() {
-        if (config.assets.audio && bgm && bgm.paused && audioToggle.textContent === '🎵') {
+        if (config.assets.audio && bgm && bgm.paused) {
             // Only auto-play if we are NOT in success state (where we want video audio)
             if (successState.classList.contains('hidden')) {
                 bgm.play().catch(e => console.log("BGM Auto-play failed", e));
                 isPlaying = true;
-                audioToggle.textContent = '🔇';
             }
         }
         // Remove listener after first interaction
@@ -424,22 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mediaPlaceholder.appendChild(img);
     }
 
-    // 5. Audio Toggle
-    let isPlaying = false;
-    if (audioToggle && bgm) {
-        audioToggle.addEventListener('click', () => {
-            if (!isPlaying) {
-                bgm.play().then(() => {
-                    isPlaying = true;
-                    audioToggle.textContent = '🔇';
-                }).catch(e => console.log(e));
-            } else {
-                bgm.pause();
-                isPlaying = false;
-                audioToggle.textContent = '🎵';
-            }
-        });
-    }
+
 
     // 6. Background Decorations
     function createFloatingHearts() {
@@ -532,6 +553,102 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    }
+
+    // 10. Final Card Logic
+    function populateFinalCard() {
+        if (finalCardIntro) finalCardIntro.textContent = "Thank you for choosing yes";
+        if (finalCardTo) finalCardTo.textContent = `To ${config.personName}`;
+        if (finalCardNote) finalCardNote.textContent = "Hope this made you smile.";
+
+        if (finalCardFrom) {
+            finalCardFrom.textContent = `From ${senderName}`;
+            finalCardFrom.style.display = 'block';
+        }
+
+        if (finalCardDate) {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'short', year: 'numeric' }; // e.g., 11 Feb 2026
+            finalCardDate.textContent = today.toLocaleDateString('en-GB', options);
+        }
+    }
+
+    function showFinalCard() {
+        // Hide all others
+        if (introScreen) introScreen.style.display = 'none'; // Ensure intro is gone
+        if (askingState) askingState.classList.add('hidden');
+        if (successState) successState.classList.add('hidden');
+        if (nextState) nextState.classList.add('hidden');
+
+        if (finalCardState) {
+            finalCardState.classList.remove('hidden');
+            finalCardState.classList.add('fade-in');
+        }
+
+        // Stop music if playing
+        if (bgm && !bgm.paused) {
+            bgm.pause();
+            isPlaying = false;
+        }
+    }
+
+    // ... (rest of code)
+
+    if (finalBackBtn) {
+        finalBackBtn.addEventListener('click', () => {
+            if (finalCardState) {
+                finalCardState.classList.add('hidden');
+                finalCardState.classList.remove('fade-in');
+            }
+            // Go back to next state usually
+            if (nextState) {
+                nextState.classList.remove('hidden');
+                nextState.classList.add('fade-in');
+            }
+        });
+    }
+
+    // 11. Save Card Functionality
+    if (saveCardBtn) {
+        saveCardBtn.addEventListener('click', () => {
+            exportFinalCardAsPng();
+        });
+    }
+
+    function exportFinalCardAsPng() {
+        const cardElement = document.getElementById('finalCard');
+        if (!cardElement) return;
+
+        saveCardBtn.textContent = "Saving...";
+
+        // Use html2canvas
+        html2canvas(cardElement, {
+            scale: 2, // Retinas display quality
+            backgroundColor: null, // Transparent bg if possible, or white by default
+            useCORS: true // Allow cross-origin images if any
+        }).then(canvas => {
+            const link = document.createElement('a');
+            const safeTo = (config.personName || "Valentine").replace(/[^a-z0-9]/gi, '_');
+            const safeFrom = (senderName || "Me").replace(/[^a-z0-9]/gi, '_');
+            const filename = `valentine-card-${safeTo}-${safeFrom}.png`;
+
+            link.download = filename;
+            link.href = canvas.toDataURL("image/png");
+
+            // Try download
+            try {
+                link.click();
+            } catch (e) {
+                console.log("Download failed, opening in new tab");
+                window.open(link.href, '_blank');
+            }
+
+            saveCardBtn.textContent = "Save Card 📸";
+        }).catch(err => {
+            console.error("Save failed:", err);
+            alert("Oops! Could not save image. Try taking a screenshot manually.");
+            saveCardBtn.textContent = "Save Card 📸";
+        });
     }
 
     // Run init

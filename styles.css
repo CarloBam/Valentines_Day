@@ -140,6 +140,7 @@ body {
     transform: scale(1.05);
     background: #ff3355;
     color: white;
+    box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
 }
 
 /* --- Intro Envelope Animation --- */
@@ -633,4 +634,76 @@ body {
     display: flex;
     gap: 1rem;
     justify-content: center;
+}
+
+/* FINAL CARD STYLES */
+.final-card {
+    background: linear-gradient(135deg, #fff0f3 0%, #fff 100%);
+    border: 1px solid #ffccd5;
+    border-radius: 15px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    /* Slightly tighter for that postcard look */
+    margin: 0 auto;
+    box-shadow: 0 5px 15px rgba(255, 77, 109, 0.15);
+    text-align: center;
+    position: relative;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    /* Updated gap */
+}
+
+/* NEW: Final Card Intro / Header */
+.final-card-intro {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: var(--color-primary);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Updated final card typography */
+.final-card-date {
+    font-size: 0.75rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1rem;
+    border-top: 1px solid #ffeef2;
+    padding-top: 10px;
+}
+
+.final-card-to {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    color: var(--color-text-soft);
+}
+
+.final-card-note {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+    font-style: italic;
+    color: #444;
+}
+
+.final-card-from {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-primary);
+}
+
+/* Decorative stamp or heart on card */
+.final-card::after {
+    content: '💖';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    opacity: 0.5;
+    transform: rotate(15deg);
 }

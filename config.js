@@ -1,8 +1,8 @@
-// Version: 1.3 - Youtube Next Step
+// Version: 1.4 - Final Card
 window.CONFIG = {
     // Next Step URL (e.g. YouTube song)
     // If set, the video will stop looping and redirect here after 2 plays.
-    youtubeNextUrl: "https://music.youtube.com/watch?v=tyKu0uZS86Q", // Example: A Thousand Years
+    youtubeNextUrl: "https://youtu.be/tyKu0uZS86Q?si=j8c5qqGToi3AEe4w", // Short link
     youtubeNextText: "A Song For You 🎵",
     // Intro Animation Settings
     intro: {
@@ -23,6 +23,9 @@ window.CONFIG = {
 
     // The title that appears on the success screen
     successTitle: "I knew you'd say YES!",
+
+    // Note on the final card
+    finalCardNote: "Thanks for making me smile",
 
     // Paths to your media assets. 
     // Place your own files in the 'assets' folder and update the names here.

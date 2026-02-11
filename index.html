@@ -10,6 +10,7 @@
     <!-- Google Fonts for a cute look -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Pacifico&display=swap"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -32,15 +33,12 @@
                 <div class="open-text" id="openText">Open Me</div>
             </div>
         </div>
-        <button id="skipBtn">Skip Intro</button>
+
     </section>
 
     <!-- MAIN APP SCREEN -->
     <main id="mainScreen" class="container hidden">
-        <!-- AUDIO TOGGLE -->
-        <button id="audioToggle" class="audio-toggle" aria-label="Toggle music">
-            🎵
-        </button>
+
 
         <!-- STATE 1: ASKING -->
         <div id="askingState" class="card fade-in">
@@ -84,6 +82,23 @@
             <p class="question">I have a song for you.</p>
             <a id="youtubeNextLink" class="song-link" href="#" target="_blank">Next Step 🎶</a>
             <button id="backToSuccessBtn" class="btn btn-secondary">Back</button>
+        </div>
+
+        <!-- STATE 4: FINAL CARD -->
+        <div id="finalCardState" class="card hidden">
+            <h1 class="headline">A little card for you 💌</h1>
+            <div id="finalCard" class="final-card">
+                <h3 class="final-card-intro" id="finalCardIntro">Thank you for choosing yes</h3>
+                <div class="final-card-to" id="finalCardTo"></div>
+                <div class="final-card-note" id="finalCardNote"></div>
+                <div class="final-card-from" id="finalCardFrom"></div>
+                <div class="final-card-date" id="finalCardDate"></div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 1rem;">
+                <button id="saveCardBtn" class="btn btn-yes" style="padding: 10px 20px; font-size: 1rem;">Save Card
+                    📸</button>
+                <button id="finalBackBtn" class="btn btn-secondary">Back</button>
+            </div>
         </div>
     </main>
 
