@@ -26,7 +26,7 @@ window.CONFIG = {
 
     // Final Card Text
     finalCardIntro: "Officially my Valentine",
-    finalCardNote: "Thanks for making me smile",
+    finalCardNote: "Thank you for making me smile",
 
     // Paths to your media assets. 
     // Place your own files in the 'assets' folder and update the names here.
