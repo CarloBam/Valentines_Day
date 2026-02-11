@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Link Builder 💌</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Pacifico&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .builder-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.15);
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #ff4d6d;
+        }
+
+        .generated-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px dashed #ffccd5;
+        }
+
+        .link-display {
+            background: #fff0f3;
+            padding: 1rem;
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: monospace;
+            color: #ff4d6d;
+            border: 1px solid #ffccd5;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        #copyBtn:disabled,
+        #previewBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #ccc;
+            box-shadow: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            font-size: 0.9rem;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hearts-container">
+        <!-- Reusing hearts from styles.css if possible, or simple static ones -->
+        <div class="heart-particle" style="left: 10%; animation-duration: 8s;">❤️</div>
+        <div class="heart-particle" style="left: 30%; animation-duration: 12s;">💖</div>
+        <div class="heart-particle" style="left: 70%; animation-duration: 10s;">💕</div>
+        <div class="heart-particle" style="left: 90%; animation-duration: 14s;">💗</div>
+    </div>
+
+    <div class="builder-card">
+        <h1 class="headline" style="text-align: center; margin-bottom: 2rem;">Link Builder 💌</h1>
+
+        <div class="form-group">
+            <label for="toNameInput">To (Recipient Name)</label>
+            <input type="text" id="toNameInput" placeholder="e.g. Sarah">
+        </div>
+
+        <div class="form-group">
+            <label for="fromNameInput">From (Sender Name)</label>
+            <input type="text" id="fromNameInput" placeholder="e.g. Carlo">
+        </div>
+
+        <div class="generated-area">
+            <label>Your Personal Link:</label>
+            <div id="generatedLink" class="link-display">Fill in both names to generate link...</div>
+
+            <div class="action-buttons">
+                <button id="copyBtn" class="btn btn-yes" disabled>Copy Link 📋</button>
+                <button id="previewBtn" class="btn btn-secondary" disabled>Preview 👀</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Link Copied! ✅</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toInput = document.getElementById('toNameInput');
+            const fromInput = document.getElementById('fromNameInput');
+            const linkDisplay = document.getElementById('generatedLink');
+            const copyBtn = document.getElementById('copyBtn');
+            const previewBtn = document.getElementById('previewBtn');
+            const toast = document.getElementById('toast');
+
+            function updateLink() {
+                const toName = toInput.value.trim();
+                const fromName = fromInput.value.trim();
+
+                if (toName && fromName) {
+                    // Determine base URL dynamically
+                    let base = window.location.href;
+
+                    // Clean up current URL to get the root directory
+                    // If ending in link.html, strip it
+                    if (base.includes('link.html')) {
+                        base = base.replace('link.html', '');
+                    }
+                    // Ensure it ends with / so we can append query params cleanly to the directory (index.html is default)
+                    // Or explicitly append index.html for clarity
+                    if (!base.endsWith('/')) {
+                        base += '/';
+                    }
+
+                    // Construct final URL
+                    const finalUrl = `${base}index.html?d=${encodeURIComponent(toName)}&f=${encodeURIComponent(fromName)}`;
+
+                    linkDisplay.textContent = finalUrl;
+                    copyBtn.disabled = false;
+                    previewBtn.disabled = false;
+
+                    // Update preview link
+                    previewBtn.onclick = () => window.open(finalUrl, '_blank');
+                } else {
+                    linkDisplay.textContent = "Fill in both names to generate link...";
+                    copyBtn.disabled = true;
+                    previewBtn.disabled = true;
+                    previewBtn.onclick = null;
+                }
+            }
+
+            // Copy Function
+            copyBtn.addEventListener('click', () => {
+                const text = linkDisplay.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast();
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    // Fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showToast();
+                });
+            });
+
+            function showToast() {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+
+            // Listeners
+            toInput.addEventListener('input', updateLink);
+            fromInput.addEventListener('input', updateLink);
+        });
+    </script>
+</body>
+
+</html>
