@@ -1,8 +1,10 @@
-const LOG_ENDPOINT = "PASTE_YOUR_SCRIPT_URL_HERE";
+const LOG_ENDPOINT = "PASTE_YOUR_WEB_APP_URL_HERE";
+const LOG_SECRET = "PUT_YOUR_SECRET_HERE";
 
 document.addEventListener('DOMContentLoaded', () => {
     const toInput = document.getElementById('toNameInput');
     const fromInput = document.getElementById('fromNameInput');
+    const consentCheck = document.getElementById('consentCheck');
     const linkDisplay = document.getElementById('generatedLink');
     const copyBtn = document.getElementById('copyBtn');
     const previewBtn = document.getElementById('previewBtn');
@@ -11,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLink() {
         const toName = toInput.value.trim();
         const fromName = fromInput.value.trim();
+        const hasConsent = consentCheck.checked;
 
         if (toName && fromName) {
             let base = window.location.href;
@@ -23,10 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const finalUrl = `${base}index.html?d=${encodeURIComponent(toName)}&f=${encodeURIComponent(fromName)}`;
-
             linkDisplay.textContent = finalUrl;
-            copyBtn.disabled = false;
-            previewBtn.disabled = false;
+
+            // Only enable buttons If consent is checked
+            if (hasConsent) {
+                copyBtn.disabled = false;
+                previewBtn.disabled = false;
+            } else {
+                copyBtn.disabled = true;
+                previewBtn.disabled = true;
+            }
         } else {
             linkDisplay.textContent = "Fill in both names to generate link...";
             copyBtn.disabled = true;
@@ -35,19 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function logLinkAction(action) {
-        if (!LOG_ENDPOINT || LOG_ENDPOINT === "PASTE_YOUR_SCRIPT_URL_HERE") return;
+        // If config is missing, just return (or log locally)
+        if (!LOG_ENDPOINT || LOG_ENDPOINT.includes("PASTE_YOUR")) {
+            console.log("Skipping log: No endpoint configured");
+            return;
+        }
 
         const toName = toInput.value.trim();
         const fromName = fromInput.value.trim();
         const link = linkDisplay.textContent;
-        const timestamp = new Date().toISOString();
 
         const payload = {
+            secret: LOG_SECRET,
             toName: toName,
             fromName: fromName,
             link: link,
-            timestamp: timestamp,
-            action: action
+            action: action,
+            userAgent: navigator.userAgent
         };
 
         // Use no-cors for Google Apps Script Web App
@@ -62,16 +75,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Logged to sheet");
         }).catch(e => {
             console.error(e);
-            alert("Could not save log, link still generated");
+            // Non-blocking warning
+            console.warn("Could not save log, link still generated");
         });
     }
 
     // Copy Function
     copyBtn.addEventListener('click', () => {
         const text = linkDisplay.textContent;
+        // Log first (fire and forget)
+        logLinkAction('copy');
+
         navigator.clipboard.writeText(text).then(() => {
             showToast();
-            logLinkAction('copy');
         }).catch(err => {
             console.error('Failed to copy: ', err);
             const textarea = document.createElement('textarea');
@@ -81,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.execCommand('copy');
             document.body.removeChild(textarea);
             showToast();
-            logLinkAction('copy');
         });
     });
 
@@ -89,8 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
     previewBtn.addEventListener('click', () => {
         const url = linkDisplay.textContent;
         if (url && url.startsWith('http')) {
-            window.open(url, '_blank');
+            // Log first (fire and forget)
             logLinkAction('preview');
+            window.open(url, '_blank');
         }
     });
 
@@ -104,4 +120,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listeners
     toInput.addEventListener('input', updateLink);
     fromInput.addEventListener('input', updateLink);
+    consentCheck.addEventListener('change', updateLink);
 });

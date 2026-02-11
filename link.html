@@ -133,9 +133,23 @@
         <div class="generated-area">
             <label>Your Personal Link:</label>
             <div id="generatedLink" class="link-display">Fill in both names to generate link...</div>
-            <p style="font-size: 0.9rem; color: #777; margin-bottom: 1rem; font-style: italic;">
+
+            <p style="font-size: 0.9rem; color: #777; margin-bottom: 0.5rem; font-style: italic;">
                 Tip: Send this link as the "next step".
             </p>
+
+            <div
+                style="margin-bottom: 1.5rem; background: #fff5f7; padding: 1rem; border-radius: 10px; border: 1px solid #ffccd5;">
+                <p style="font-size: 0.85rem; color: #555; margin-bottom: 0.8rem; line-height: 1.4;">
+                    <strong>Note:</strong> This tool saves the names and link you generate for misuse prevention. Only
+                    create links for people you have permission to message.
+                </p>
+                <label
+                    style="display: flex; align-items: start; gap: 10px; font-weight: normal; font-size: 0.9rem; cursor: pointer;">
+                    <input type="checkbox" id="consentCheck" style="margin-top: 3px;">
+                    <span>I confirm I have permission to use the recipient's name and send this link.</span>
+                </label>
+            </div>
 
             <div class="action-buttons">
                 <button id="copyBtn" class="btn btn-yes" disabled>Copy Link 📋</button>
