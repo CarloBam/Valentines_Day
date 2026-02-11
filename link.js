@@ -4,7 +4,6 @@ const LOG_SECRET = "YOUR_SUPER_SECRET_KEY_123";
 document.addEventListener('DOMContentLoaded', () => {
     const toInput = document.getElementById('toNameInput');
     const fromInput = document.getElementById('fromNameInput');
-    const consentCheck = document.getElementById('consentCheck');
     const linkDisplay = document.getElementById('generatedLink');
     const copyBtn = document.getElementById('copyBtn');
     const previewBtn = document.getElementById('previewBtn');
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLink() {
         const toName = toInput.value.trim();
         const fromName = fromInput.value.trim();
-        const hasConsent = consentCheck.checked;
 
         if (toName && fromName) {
             let base = window.location.href;
@@ -28,14 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const finalUrl = `${base}index.html?d=${encodeURIComponent(toName)}&f=${encodeURIComponent(fromName)}`;
             linkDisplay.textContent = finalUrl;
 
-            // Only enable buttons If consent is checked
-            if (hasConsent) {
-                copyBtn.disabled = false;
-                previewBtn.disabled = false;
-            } else {
-                copyBtn.disabled = true;
-                previewBtn.disabled = true;
-            }
+            // Enable buttons
+            copyBtn.disabled = false;
+            previewBtn.disabled = false;
         } else {
             linkDisplay.textContent = "Fill in both names to generate link...";
             copyBtn.disabled = true;
@@ -113,5 +106,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listeners
     toInput.addEventListener('input', updateLink);
     fromInput.addEventListener('input', updateLink);
-    consentCheck.addEventListener('change', updateLink);
 });
